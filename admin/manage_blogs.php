@@ -6,7 +6,8 @@ require_once './includes/header.php';
 <div class="app-content-header">
     <div class="container-fluid">
         <div class="row">
-            <div class="col-sm-6">
+            <div class="col-sm-6">git branch -M main
+                
                 <h3 class="mb-0">Manage Blogs</h3>
             </div>
             <div class="col-sm-6">
