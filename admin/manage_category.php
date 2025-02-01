@@ -9,7 +9,6 @@ if (isset($_GET['edit_id'])) {
     $existed_category = "SELECT * FROM `category` WHERE id = '$edit_id'";
     $existed_category_sql = mysqli_query($con, $existed_category);
     $existed_category_sql_res = mysqli_fetch_assoc($existed_category_sql);
-
     $category_name = $existed_category_sql_res['category_name'];
 }
 
@@ -25,12 +24,10 @@ if (isset($_POST['add_btn'])) {
     $existed_category = "SELECT * FROM `category` WHERE category_name = '$category_name'";
     $existed_category_sql = mysqli_query($con, $existed_category);
 
-
     if (mysqli_num_rows($existed_category_sql) > 0) {
 
         if ($_GET['edit_id']) {
             $edit_data = mysqli_fetch_assoc($existed_category_sql);
-
             if ($_GET['edit_id'] !== $edit_data['id']) {
                 $errors[] = 'Already existed category name ';
             }

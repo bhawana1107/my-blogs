@@ -49,7 +49,6 @@ $blog_result = mysqli_fetch_all($existed_blog_query, MYSQLI_ASSOC);
                                     <th style="width:20px;">S.No</th>
                                     <th>Blog Name</th>
                                     <th>Blog Category</th>
-                                    <th>Blog Content</th>
                                     <th>Blog Status</th>
                                     <th>Actions</th>
                                 </tr>
@@ -63,7 +62,6 @@ $blog_result = mysqli_fetch_all($existed_blog_query, MYSQLI_ASSOC);
                                             <td><?= $key + 1 ?></td>
                                             <td><?= $blog_res['blog_name'] ?></td>
                                             <td><?= $blog_res['category_id'] ?></td>
-                                            <td><?= $blog_res['blog_content'] ?></td>
                                             <td>
                                                 <form action="blog_status.php" method="post">
                                                     <input type="hidden" name="status_id" value="<?= $blog_res['id'] ?>">
@@ -78,7 +76,7 @@ $blog_result = mysqli_fetch_all($existed_blog_query, MYSQLI_ASSOC);
                                             </td>
                                             <td>
                                                 <div class="d-flex gap-3">
-                                                    <form action="manage_blogs.php" method="get">
+                                                    <form action="manage_blogs.php" method="post">
                                                         <input type="hidden" name="edit_id" value="<?= $blog_res['id'] ?>">
                                                         <button type="submit" class="btn btn-success">Edit</button>
                                                     </form>
