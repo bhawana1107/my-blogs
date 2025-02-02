@@ -8,89 +8,78 @@ $category = "SELECT * FROM `category` ";
 $category_query = mysqli_query($con, $category);
 $category_result = mysqli_fetch_all($category_query, MYSQLI_ASSOC);
 
-
-$blog_name = "" ;
+$errors = [];
+$success = '';
+$blog_name = "";
 $blog_category = "";
 $blog_content = "";
-// CHECK EDIT OR NOT
-if (isset($_POST['edit_id'])) {
-    $edit_id = mysqli_real_escape_string($con, trim($_POST['edit_id']));
+
+// IF EDIT DONE
+if (isset($_GET['edit_id'])) {
+    $edit_id = mysqli_real_escape_string($con, trim($_GET['edit_id']));
 
     $existed_blog = "SELECT * FROM `blogs` WHERE id = '$edit_id'";
     $existed_blog_sql = mysqli_query($con, $existed_blog);
     $existed_blog_sql_res = mysqli_fetch_assoc($existed_blog_sql);
-    pr($existed_blog_sql_res);
-    $blog_name = $existed_category_sql_res['blog_name'];
-    $blog_category = $existed_category_sql_res['blog_category'];
-    $blog_content = $existed_category_sql_res['blog_content'];
+    $blog_name = $existed_blog_sql_res['blog_name'];
+    $blog_category = $existed_blog_sql_res['category_id'];
+    $blog_content = $existed_blog_sql_res['blog_content'];
 }
+
+// IF ADD BLOG DONE
 if (isset($_POST['submit'])) {
-pr($_POST);
+
     $blog_name = mysqli_real_escape_string($con, trim($_POST['blog_name']));
     $blog_category = mysqli_real_escape_string($con, trim($_POST['blog_category']));
-    $blog_content = htmlspecialchars(mysqli_real_escape_string($con, trim($_POST['blog_content'])));
+    $blog_content = mysqli_real_escape_string($con, trim($_POST['blog_content']));
+    $blog_content = htmlspecialchars($blog_content);
 
-    if ($blog_name === '') {
-        $errors[] = 'Blog name cannot be blank ';
+    if ($blog_name === '' && $blog_category === '' && $blog_content === '') {
+        $errors[] = 'ALL field Cannot Be blank';
     }
-    if ($blog_category === '') {
-        $errors[] = 'Blog Category cannot be blank ';
-    }
-    if ($blog_content === '') {
-        $errors[] = 'Blog Content cannot be blank ';
-    }
+    // if () {
+    //     $errors[] = 'blog Category cannot be blank ';
+    // }
+    // if () {
+    //     $errors[] = 'blog conetntCategory cannot be blank ';
+    // }
 
-    $existed_blog = "SELECT * FROM `blogs` WHERE blog_name = '$blog_name' AND blog_Category
-    = '$blog_category' AND blog_content = '$blog_content' ";
+    $existed_blog = "SELECT * FROM `blogs` WHERE blog_name = '$blog_name' AND category_id = '$blog_category' AND
+    blog_content = '$blog_content'";
     $existed_blog_sql = mysqli_query($con, $existed_blog);
-pr($existed_blog_sql);
 
     if (mysqli_num_rows($existed_blog_sql) > 0) {
-        $edit_data = mysqli_fetch_assoc($existed_blog_sql);
-        if ($_POST['edit_id']) {
-            $edit_data = mysqli_fetch_assoc($existed_blog_sql);
 
-            if ($_POST['edit_id'] !== $edit_data['id']) {
-                $errors[] = 'Already existed category name ';
+        if ($_GET['edit_id']) {
+            $edit_data = mysqli_fetch_assoc($existed_blog_sql);
+            if ($_GET['edit_id'] !== $edit_data['id']) {
+                $errors[] = 'Already existed blog name ';
             }
         } else {
-            $errors[] = 'Already existed category name ';
+            $errors[] = 'Already existed blog name ';
         }
     }
 
     if (empty($errors)) {
 
-        if ($_post['edit_id']) {
-            echo $update_category = "UPDATE `blogs` SET blog_name = '$blog_name' WHERE id='" . $_POST['edit_id'] . "' ";
-            $update_category_sql = mysqli_query($con, $update_category);
-            pr($update_category_sql);
-            $_SESSION['success'] = 'Blog Updated Successfully';
+        if ($_GET['edit_id']) {
+            $update_blog = "UPDATE `blogs` SET blog_name = '$blog_name' , category_id = '$blog_category' , blog_content = '$blog_content' WHERE id='" . $_GET['edit_id'] . "'";
+            $update_blog_sql = mysqli_query($con, $update_blog);
+            $_SESSION['success'] = 'blog Updated Successfully';
             header('location: blogs.php');
             die();
         } else {
-            $insertblog = "INSERT INTO `blogs` (blog_name ,category_id ,blog_content ,created_at) VALUES ('$blog_name','$blog_category','$blog_content' , 'current_timestamp()')";
-            $insertblog_query = mysqli_query($con, $insertblog);
-            if ($insertblog_query) {
-                $_SESSION['success'] = 'Blog Submitted Successfully !';
-                header('location: index.php');
+            $blog_add = "INSERT INTO `blogs` (blog_name ,category_id ,blog_content) VALUES ('$blog_name','$blog_category','$blog_content')";
+            $blog_add_query = mysqli_query($con, $blog_add);
+            if ($blog_add_query) {
+                $_SESSION['success'] = 'blog Add Successfully';
+                header('location: blogs.php');
                 die();
             } else {
                 $errors[] = 'Something wrong';
             }
         }
     }
-}
-// INSRT DATA IN BLOGS
-if (isset($_POST['submit'])) {
-    $blog_name = mysqli_real_escape_string($con, trim($_POST['blog_name']));
-    $blog_category = mysqli_real_escape_string($con, trim($_POST['blog_category']));
-    $blog_content = htmlspecialchars(mysqli_real_escape_string($con, trim($_POST['blog_content'])));
-
-    // $insertblog = "INSERT INTO `blogs` (blog_name ,category_id ,blog_content) VALUES ('$blog_name','$blog_category','$blog_content')";
-    // $insertblog_query = mysqli_query($con, $insertblog);
-    // if ($insertblog_query) {
-    //     echo "Blog Submitted Successfully !";
-    // }
 }
 
 if (!empty($errors)) {
@@ -138,7 +127,7 @@ if (!empty($success)) {
                 <div class="card-header">
                     <div class="card-title">Add Blogs</div>
                 </div>
-                <form method="post" action="<?= htmlspecialchars($_SERVER['PHP_SELF']) ?>?">
+                <form method="post" action="">
                     <div class="card-body">
                         <div class="mb-3">
                             <label for="blogName" class="form-label">Blog Name</label>
@@ -147,12 +136,12 @@ if (!empty($success)) {
                         <div class="mb-3">
                             <label for="blogCategory" class="form-label">Blog Category</label>
                             <select class="form-select" id="blogCategory" name="blog_category" value="<?= $blog_category ?>" autofocus>
-                                <option selected="" disabled="" value="">Choose...</option>
+                                <option selected="" value="choose">Choose...</option>
                                 <?php
                                 if (is_array($category_result) && count($category_result)) {
                                     foreach ($category_result as $key => $category_res) {
                                 ?>
-                                        <option><?= $category_res['category_name'] ?></option>
+                                        <option value="<?= $category_res['id'] ?>" <?= ($blog_category == $category_res['id'] ? 'selected' : '') ?>><?= $category_res['category_name'] ?></option>
                                 <?php }
                                 }
                                 ?>
@@ -160,7 +149,8 @@ if (!empty($success)) {
                         </div>
                         <div class="mb-3">
                             <label for="blogContent" class="form-label">Blog Content</label>
-                            <textarea id="editor" name="blog_content" id="blog_content" value="<?= $blog_content ?>" autofocus>
+                            <textarea id="editor" name="blog_content" id="blog_content">
+                                <?= $blog_content ?>
                             </textarea>
                         </div>
                     </div>

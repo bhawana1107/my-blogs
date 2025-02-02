@@ -84,7 +84,7 @@ $existed_category_result = mysqli_fetch_all($existed_category_sql, MYSQLI_ASSOC)
                                                     </form>
                                                     <form action="category_delete.php" method="post" id="delete_form">
                                                         <input type="hidden" name="delete_id" value="<?= $category_res['id'] ?>">
-                                                        <button type="submit" class="btn btn-danger" name="delete_btn" id="delete_btn">Delete</button>
+                                                        <button type="submit" class="btn btn-danger delete_btn" name="delete_btn">Delete</button>
 
                                                     </form>
                                                 </div>
@@ -125,7 +125,7 @@ $existed_category_result = mysqli_fetch_all($existed_category_sql, MYSQLI_ASSOC)
 
 <?php include_once "./includes/footer.php" ?>
 <script>
-    $('#delete_btn').click(function(e) {
+    $('.delete_btn').click(function(e) {
         e.preventDefault()
         if (confirm('Are You Sure Want To Delete ?')) {
             $('#delete_form').submit()

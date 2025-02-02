@@ -1,15 +1,15 @@
 <?php
 require_once './includes/header.php';
 
+// SUCCESS BY TOASTR
 if (!empty($_SESSION['success'])) {
-
     echo "<script>
             toastr.success('" . $_SESSION['success'] . "');
         </script>";
     unset($_SESSION['success']);
 }
 
-// DATA FROM BLOG DATABASE
+// ALL DATA FROM BLOG DATABASE
 $existed_blog = "SELECT * FROM `blogs` ";
 $existed_blog_query = mysqli_query($con, $existed_blog);
 $blog_result = mysqli_fetch_all($existed_blog_query, MYSQLI_ASSOC);
@@ -76,13 +76,13 @@ $blog_result = mysqli_fetch_all($existed_blog_query, MYSQLI_ASSOC);
                                             </td>
                                             <td>
                                                 <div class="d-flex gap-3">
-                                                    <form action="manage_blogs.php" method="post">
+                                                    <form action="manage_blogs.php" method="get">
                                                         <input type="hidden" name="edit_id" value="<?= $blog_res['id'] ?>">
                                                         <button type="submit" class="btn btn-success">Edit</button>
                                                     </form>
                                                     <form action="blog_delete.php" method="post" id="delete_form">
                                                         <input type="hidden" name="delete_id" value="<?= $blog_res['id'] ?>">
-                                                        <button type="submit" class="btn btn-danger" name="delete_btn" id="delete_btn">Delete</button>
+                                                        <button type="submit" class="btn btn-danger delete_btn" name="delete_btn">Delete</button>
                                                     </form>
                                                 </div>
                                             </td>
@@ -117,8 +117,9 @@ $blog_result = mysqli_fetch_all($existed_blog_query, MYSQLI_ASSOC);
 require_once './includes/footer.php';
 ?>
 
+<!-- ALERT FOR DELETING BLOGS -->
 <script>
-    $('#delete_btn').click(function(e) {
+    $('.delete_btn').click(function(e) {
         e.preventDefault()
         if (confirm('Are You Sure Want To Delete ?')) {
             $('#delete_form').submit()
