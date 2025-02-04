@@ -80,7 +80,7 @@ $blog_result = mysqli_fetch_all($existed_blog_query, MYSQLI_ASSOC);
                                                         <input type="hidden" name="edit_id" value="<?= $blog_res['id'] ?>">
                                                         <button type="submit" class="btn btn-success">Edit</button>
                                                     </form>
-                                                    <form action="blog_delete.php" method="post" id="delete_form">
+                                                    <form action="blog_delete.php" method="post" class="delete_form">
                                                         <input type="hidden" name="delete_id" value="<?= $blog_res['id'] ?>">
                                                         <button type="submit" class="btn btn-danger delete_btn" name="delete_btn">Delete</button>
                                                     </form>
@@ -121,8 +121,9 @@ require_once './includes/footer.php';
 <script>
     $('.delete_btn').click(function(e) {
         e.preventDefault()
+        // console.log($('input[type=hidden]').val())
         if (confirm('Are You Sure Want To Delete ?')) {
-            $('#delete_form').submit()
+            $(this).closest('form').submit()
         }
     })
 </script>

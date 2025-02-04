@@ -167,8 +167,9 @@ if (!empty($success)) {
 require_once './includes/footer.php';
 ?>
 
-
 <script src="https://cdn.ckeditor.com/ckeditor5/44.1.0/ckeditor5.umd.js"></script>
+<script src="https://cdn.ckbox.io/ckbox/2.4.0/ckbox.js"></script>
+
 <script>
     const {
         ClassicEditor,
@@ -220,7 +221,10 @@ require_once './includes/footer.php';
                 ],
                 shouldNotGroupWhenFull: true
             },
+
+
         })
+
         .then(editor => {
             console.log("Editor loaded successfully", editor);
         })

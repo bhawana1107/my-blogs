@@ -12,6 +12,7 @@ if (isset($_POST['status_btn'])) {
 
     // Check Query Run Or Not
     if ($status_query) {
+        $_SESSION['success'] = 'Status Updated Successfully';
         header('location: index.php');
         exit();
     } else {
