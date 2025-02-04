@@ -13,7 +13,7 @@ $success = '';
 $blog_name = "";
 $blog_category = "";
 $blog_content = "";
-
+$blog_image = "";
 // IF EDIT DONE
 if (isset($_GET['edit_id'])) {
     $edit_id = mysqli_real_escape_string($con, trim($_GET['edit_id']));
@@ -23,6 +23,7 @@ if (isset($_GET['edit_id'])) {
     $existed_blog_sql_res = mysqli_fetch_assoc($existed_blog_sql);
     $blog_name = $existed_blog_sql_res['blog_name'];
     $blog_category = $existed_blog_sql_res['category_id'];
+    $blog_image = $existed_blog_sql_res['blog_image'];
     $blog_content = $existed_blog_sql_res['blog_content'];
 }
 
@@ -34,17 +35,23 @@ if (isset($_POST['submit'])) {
     $blog_content = mysqli_real_escape_string($con, trim($_POST['blog_content']));
     $blog_content = htmlspecialchars($blog_content);
 
-    if ($blog_name === '' && $blog_category === '' && $blog_content === '') {
+    if (!empty($_FILES['blog_image']['name'])) {
+        $target_dir = "assets/image/";
+        $file_name = time() . "_" . basename($_FILES["blog_image"]["name"]);
+        $target_file = $target_dir . $file_name;
+
+        if (move_uploaded_file($_FILES["blog_image"]["tmp_name"], $target_file)) {
+            $blog_image = $target_file;
+        } else {
+            $errors[] = "Failed to upload the image.";
+        }
+    }
+
+    if ($blog_name === '' && $blog_category === 'choose' && $blog_content === '') {
         $errors[] = 'ALL field Cannot Be blank';
     }
-    // if () {
-    //     $errors[] = 'blog Category cannot be blank ';
-    // }
-    // if () {
-    //     $errors[] = 'blog conetntCategory cannot be blank ';
-    // }
 
-    $existed_blog = "SELECT * FROM `blogs` WHERE blog_name = '$blog_name' AND category_id = '$blog_category' AND
+    $existed_blog = "SELECT * FROM `blogs` WHERE blog_name = '$blog_name' AND category_id = '$blog_category' AND blog_image = '$blog_image' AND
     blog_content = '$blog_content'";
     $existed_blog_sql = mysqli_query($con, $existed_blog);
 
@@ -63,13 +70,13 @@ if (isset($_POST['submit'])) {
     if (empty($errors)) {
 
         if ($_GET['edit_id']) {
-            $update_blog = "UPDATE `blogs` SET blog_name = '$blog_name' , category_id = '$blog_category' , blog_content = '$blog_content' WHERE id='" . $_GET['edit_id'] . "'";
+            $update_blog = "UPDATE `blogs` SET blog_name = '$blog_name' , category_id = '$blog_category' , blog_image = '$blog_image' , blog_content = '$blog_content' WHERE id='" . $_GET['edit_id'] . "'";
             $update_blog_sql = mysqli_query($con, $update_blog);
             $_SESSION['success'] = 'blog Updated Successfully';
             header('location: blogs.php');
             die();
         } else {
-            $blog_add = "INSERT INTO `blogs` (blog_name ,category_id ,blog_content) VALUES ('$blog_name','$blog_category','$blog_content')";
+            $blog_add = "INSERT INTO `blogs` (blog_name ,category_id ,blog_image, blog_content) VALUES ('$blog_name','$blog_category','$blog_image','$blog_content')";
             $blog_add_query = mysqli_query($con, $blog_add);
             if ($blog_add_query) {
                 $_SESSION['success'] = 'blog Add Successfully';
@@ -127,7 +134,7 @@ if (!empty($success)) {
                 <div class="card-header">
                     <div class="card-title">Add Blogs</div>
                 </div>
-                <form method="post" action="">
+                <form method="post" action="" enctype="multipart/form-data">
                     <div class="card-body">
                         <div class="mb-3">
                             <label for="blogName" class="form-label">Blog Name</label>
@@ -137,17 +144,28 @@ if (!empty($success)) {
                             <label for="blogCategory" class="form-label">Blog Category</label>
                             <select class="form-select" id="blogCategory" name="blog_category" value="<?= $blog_category ?>" autofocus>
                                 <option selected="" value="choose">Choose...</option>
+
                                 <?php
                                 if (is_array($category_result) && count($category_result)) {
                                     foreach ($category_result as $key => $category_res) {
+                                        if ($category_res['category_status'] == 1) {
                                 ?>
-                                        <option value="<?= $category_res['id'] ?>" <?= ($blog_category == $category_res['id'] ? 'selected' : '') ?>><?= $category_res['category_name'] ?></option>
+                                            <option value="<?= $category_res['id'] ?>" <?= ($blog_category == $category_res['id'] ? 'selected' : '') ?>><?= $category_res['category_name'] ?></option>
                                 <?php }
+                                    }
                                 }
                                 ?>
                             </select>
                         </div>
                         <div class="mb-3">
+                            <label for="blogImage" class="form-label">Blog Image</label>
+                            <input type="file" class="form-control" id="blogImage" name="blog_image">
+
+                            <?php if ($blog_image): ?>
+                                <img src="<?= $blog_image ?>" alt="Current Blog Image" style="max-width: 200px; max-height: 150px; object-fit: cover;">
+                            <?php endif; ?>
+                        </div>
+                        <div class=" mb-3">
                             <label for="blogContent" class="form-label">Blog Content</label>
                             <textarea id="editor" name="blog_content" id="blog_content">
                                 <?= $blog_content ?>

@@ -1,14 +1,13 @@
-<?php require_once "./includes/db.php"; 
+<?php require_once "./includes/db.php";
 ob_start();
 ?>
 <?php
 if (!isset($_SESSION['is_login']) || $_SESSION['is_login'] !== true) {
-    header('location: login.php');
+    header('location: register.php');
     exit();
+} else {
+    $success = 'Welcome ' . $_SESSION['user_email'];
 }
-// else {
-//     $success = 'Welcome ' . $_SESSION['user_email'];
-// }
 ?>
 <!doctype html>
 <html lang="en">
@@ -233,7 +232,7 @@ if (!isset($_SESSION['is_login']) || $_SESSION['is_login'] !== true) {
                     <li class="nav-item dropdown user-menu">
                         <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">
                             <img
-                                src="./img/user2-160x160.jpg"
+                                src="./img/user_img.png"
                                 class="user-image rounded-circle shadow"
                                 alt="User Image" />
                             <!-- <span class="d-none d-md-inline">Alexander Pierce</span> -->
@@ -281,12 +280,12 @@ if (!isset($_SESSION['is_login']) || $_SESSION['is_login'] !== true) {
             <!--begin::Sidebar Brand-->
             <div class="sidebar-brand">
                 <!--begin::Brand Link-->
-                <a href="./index.html" class="brand-link">
+                <a href="index.php" class="brand-link">
                     <!--begin::Brand Image-->
-                    <img
+                    <!-- <img
                         src="<?= BASE_URL ?>img/AdminLTEFullLogo.png"
                         alt="AdminLTE Logo"
-                        class="brand-image opacity-75 shadow" />
+                        class="brand-image opacity-75 shadow" /> -->
                     <!--end::Brand Image-->
                     <!--begin::Brand Text-->
                     <span class="brand-text fw-light">My Blog</span>
@@ -305,7 +304,7 @@ if (!isset($_SESSION['is_login']) || $_SESSION['is_login'] !== true) {
                         role="menu"
                         data-accordion="false">
                         <li class="nav-item ">
-                            <a href="./" class="nav-link active">
+                            <a href="category.php" class="nav-link active">
                                 <i class="nav-icon bi bi-circle"></i>
                                 <p>Categories</p>
                             </a>

@@ -42,14 +42,14 @@ if (isset($_POST['add_btn'])) {
             echo $update_category = "UPDATE `category` SET category_name = '$category_name' WHERE id='" . $_GET['edit_id'] . "' ";
             $update_category_sql = mysqli_query($con, $update_category);
             $_SESSION['success'] = 'Category Updated Successfully';
-            header('location: index.php');
+            header('location: category.php');
             die();
         } else {
             $category_add = "INSERT INTO `category` (category_name, created_at) VALUES ('$category_name', 'current_timestamp()')";
             $category_add_query = mysqli_query($con, $category_add);
             if ($category_add_query) {
                 $_SESSION['success'] = 'Category Add Successfully';
-                header('location: index.php');
+                header('location: category.php');
                 die();
             } else {
                 $errors[] = 'Something wrong';
@@ -84,7 +84,7 @@ if (!empty($success)) {
             </div>
             <div class="col-sm-6">
                 <ol class="breadcrumb float-sm-end">
-                    <li class="breadcrumb-item btn btn-primary btn-lg"> <a href="index.php" class="text-white">Back</a></li>
+                    <li class="breadcrumb-item btn btn-primary btn-lg"> <a href="category.php" class="text-white">Back</a></li>
                 </ol>
             </div>
         </div>

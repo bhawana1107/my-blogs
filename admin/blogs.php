@@ -10,7 +10,8 @@ if (!empty($_SESSION['success'])) {
 }
 
 // ALL DATA FROM BLOG DATABASE
-$existed_blog = "SELECT * FROM `blogs` ";
+$existed_blog = "SELECT blogs.*, category.category_name FROM `blogs` LEFT JOIN category ON category.id=blogs.category_id";
+
 $existed_blog_query = mysqli_query($con, $existed_blog);
 $blog_result = mysqli_fetch_all($existed_blog_query, MYSQLI_ASSOC);
 ?>
@@ -49,6 +50,7 @@ $blog_result = mysqli_fetch_all($existed_blog_query, MYSQLI_ASSOC);
                                     <th style="width:20px;">S.No</th>
                                     <th>Blog Name</th>
                                     <th>Blog Category</th>
+                                    <th>Blog Image</th>
                                     <th>Blog Status</th>
                                     <th>Actions</th>
                                 </tr>
@@ -61,7 +63,10 @@ $blog_result = mysqli_fetch_all($existed_blog_query, MYSQLI_ASSOC);
                                         <tr class="align-middle">
                                             <td><?= $key + 1 ?></td>
                                             <td><?= $blog_res['blog_name'] ?></td>
-                                            <td><?= $blog_res['category_id'] ?></td>
+                                            <td><?= $blog_res['category_name'] ?></td>
+                                            <td>
+                                                <img src="<?= htmlspecialchars($blog_res['blog_image']) ?>" width="100" height="100" />
+                                            </td>
                                             <td>
                                                 <form action="blog_status.php" method="post">
                                                     <input type="hidden" name="status_id" value="<?= $blog_res['id'] ?>">

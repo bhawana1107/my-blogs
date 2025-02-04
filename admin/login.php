@@ -50,6 +50,7 @@ if (isset($_POST['signin'])) {
 <!DOCTYPE html>
 <html lang="en">
 <!--begin::Head-->
+
 <head>
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
   <title>MY BLOG | Login Page</title>
@@ -66,7 +67,7 @@ if (isset($_POST['signin'])) {
   <!--end::Primary Meta Tags-->
   <!--begin::Fonts-->
   <link rel="stylesheet" href="https://adminlte.io/themes/v3/plugins/toastr/toastr.min.css">
-  
+
   <!--end::Fonts-->
   <!--begin::Third Party Plugin(OverlayScrollbars)-->
   <link
@@ -198,7 +199,7 @@ if (isset($_POST['signin'])) {
   </script>
 
   <script src="https://adminlte.io/themes/v3/plugins/toastr/toastr.min.js"></script>
-  
+
   <!--end::OverlayScrollbars Configure-->
   <!--end::Script-->
 </body>
