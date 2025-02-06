@@ -22,7 +22,7 @@ if (isset($_POST['signin'])) {
   // Data verification
   if (empty($errors)) {
     $hashPassword = md5($password);
-    $existedUser = "SELECT * FROM users WHERE id = '1' AND email = '$email' AND password = '$hashPassword'";
+    $existedUser = "SELECT * FROM users WHERE  email = '$email' AND password = '$hashPassword'";
     $existedUserSql = mysqli_query($con, $existedUser);
     if (mysqli_num_rows($existedUserSql)) {
       $user = mysqli_fetch_assoc($existedUserSql);
@@ -32,7 +32,7 @@ if (isset($_POST['signin'])) {
       $_SESSION['user_id'] = $user['id'];
       $_SESSION['user_email'] = $user['email'];
 
-      echo "User Login Successfully";
+      $success = "User Login Successfully";
       header('location: index.php');
       exit();
     } else {
@@ -45,6 +45,9 @@ if (isset($_POST['signin'])) {
     }
   }
 }
+
+
+
 
 ?>
 <!DOCTYPE html>
@@ -86,6 +89,9 @@ if (isset($_POST['signin'])) {
   <!--begin::Required Plugin(AdminLTE)-->
   <link rel="stylesheet" href="css/adminlte.css" />
   <!--end::Required Plugin(AdminLTE)-->
+
+
+
 </head>
 <!--end::Head-->
 <!--begin::Body-->

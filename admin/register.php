@@ -1,6 +1,47 @@
 <?php
 require_once 'includes/db.php';
 
+$errors = [];
+$success = '';
+$user_name = '';
+$email = '';
+$password = '';
+
+if (isset($_POST['signup'])) {
+  $user_name = mysqli_real_escape_string($con, trim($_POST['user_name']));
+  $email = mysqli_real_escape_string($con, trim($_POST['email']));
+  $password = mysqli_real_escape_string($con, trim($_POST['password']));
+  $role_id = 2;
+
+    // Data validation
+    if ($user_name === '') {
+        $errors[] = 'User Name cannot be blank';
+    }
+  if ($email === '') {
+    $errors[] = 'Email cannot be blank';
+  }
+  if ($password === '' ) {
+    $errors[] = 'Password cannot be blank';
+  }
+
+
+  // Data verification
+  if (empty($errors)) {
+    $hashPassword = md5($password);
+    $existedUser = "SELECT * FROM users WHERE user_name = '$user_name'AND
+    email = '$email' AND password = '$hashPassword'";
+    $existedUserSql = mysqli_query($con, $existedUser);
+      
+    if (mysqli_num_rows($existedUserSql)) {
+      $errors = "User Already Exist";
+  } else {
+   $insertUser = "INSERT INTO users (user_name,email,password,roleid) VALUES
+   ('$user_name','$email','$hashPassword','$role_id')" ;
+   $insertUserSql = mysqli_query($con, $insertUser);
+   pr($insertUserSql);
+  }
+}
+}
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -45,8 +86,6 @@ require_once 'includes/db.php';
 <!--end::Head-->
 <!--begin::Body-->
 
-
-
 <body class="login-page bg-body-secondary">
     <div class="login-box">
         <div class="login-logo">
@@ -58,7 +97,7 @@ require_once 'includes/db.php';
                 <p class="login-box-msg">Sign Up to start your session</p>
                 <form action="<?= htmlspecialchars($_SERVER['PHP_SELF']) ?>" method="post">
                     <div class="input-group mb-3">
-                        <input type="text" class="form-control" placeholder="Name" name="name" />
+                        <input type="text" class="form-control" placeholder="Name" name="user_name" />
                         <div class="input-group-text">
                             <span class="bi bi-person"></span>
                         </div>
