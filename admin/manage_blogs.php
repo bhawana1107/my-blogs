@@ -34,7 +34,7 @@ if (isset($_POST['submit'])) {
     $blog_category = mysqli_real_escape_string($con, trim($_POST['blog_category']));
     $blog_content = mysqli_real_escape_string($con, trim($_POST['blog_content']));
     $blog_content = htmlspecialchars($blog_content);
-    $date = date('y/m/d');
+    $date = date('y-m-d');
     if (!empty($_FILES['blog_image']['name'])) {
         $target_dir = "assets/image/";
         $file_name = time() . "_" . basename($_FILES["blog_image"]["name"]);
@@ -47,8 +47,8 @@ if (isset($_POST['submit'])) {
         }
     }
 
-    if ($blog_name === '' && $blog_category === 'choose' && $blog_content === '') {
-        $errors[] = 'ALL field Cannot Be blank';
+    if ($blog_name === '' || $blog_category === 'choose' || $blog_content === '' || $blog_image === '' ) {
+        $errors[] = 'Please fill all details';
     }
 
     $existed_blog = "SELECT * FROM `blogs` WHERE blog_name = '$blog_name' AND category_id = '$blog_category' AND blog_image = '$blog_image' AND
@@ -77,7 +77,7 @@ if (isset($_POST['submit'])) {
             die();
         } else {
             $user_id = $_SESSION['user_id'];
-            $blog_add = "INSERT INTO `blogs` (blog_name ,category_id ,blog_image, blog_content,user_id,created_on) VALUES ('$blog_name','$blog_category','$blog_image','$blog_content','$user_id','$date')";
+            $blog_add = "INSERT INTO `blogs` (blog_name ,category_id ,blog_image, blog_content,user_id,created_on,created_by) VALUES ('$blog_name','$blog_category','$blog_image','$blog_content','$user_id','$date','$user_id')";
             $blog_add_query = mysqli_query($con, $blog_add);
             if ($blog_add_query) {
                 $_SESSION['success'] = 'blog Add Successfully';

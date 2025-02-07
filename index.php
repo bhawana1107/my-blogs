@@ -2,7 +2,7 @@
 include('./includes/header.php');
 
 // CATEGORY DATA
-$category = "SELECT * FROM category";
+$category = "SELECT * FROM category WHERE category_status = 1";
 $category_sql = mysqli_query($con, $category);
 $category_query = mysqli_fetch_all($category_sql, MYSQLI_ASSOC);
 
@@ -11,7 +11,7 @@ $category_query = mysqli_fetch_all($category_sql, MYSQLI_ASSOC);
 $blogs = "SELECT blogs.*, category.category_name FROM `blogs` LEFT JOIN category ON category.id=blogs.category_id";
 $blogs_sql = mysqli_query($con, $blogs);
 $blogs_query = mysqli_fetch_all($blogs_sql, MYSQLI_ASSOC);
-pr($blogs_query);
+// pr($blogs_query);
 ?>
 
 

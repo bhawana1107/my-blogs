@@ -22,8 +22,10 @@ else{
      $puser_id = $_SESSION['user_id'] ;
     // ALL DATA FROM BLOG DATABASE
     $existeduser_blog = "SELECT blogs.*, category.category_name FROM `blogs` LEFT JOIN category ON category.id=blogs.category_id WHERE user_id = '$puser_id' ";
+    // pr($existeduser_blog);
     $existeduser_blog_query = mysqli_query($con, $existeduser_blog);
     $blog_result = mysqli_fetch_all($existeduser_blog_query, MYSQLI_ASSOC);
+// pr($blog_result);
 }
 ?>
 
