@@ -1,3 +1,6 @@
+<?php require_once "./admin/includes/db.php";
+ob_start();
+?>
 <!DOCTYPE html>
 <html lang="en">
 

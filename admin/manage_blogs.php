@@ -34,7 +34,7 @@ if (isset($_POST['submit'])) {
     $blog_category = mysqli_real_escape_string($con, trim($_POST['blog_category']));
     $blog_content = mysqli_real_escape_string($con, trim($_POST['blog_content']));
     $blog_content = htmlspecialchars($blog_content);
-
+    $date = date('y/m/d');
     if (!empty($_FILES['blog_image']['name'])) {
         $target_dir = "assets/image/";
         $file_name = time() . "_" . basename($_FILES["blog_image"]["name"]);
@@ -70,13 +70,14 @@ if (isset($_POST['submit'])) {
     if (empty($errors)) {
 
         if ($_GET['edit_id']) {
-            $update_blog = "UPDATE `blogs` SET blog_name = '$blog_name' , category_id = '$blog_category' , blog_image = '$blog_image' , blog_content = '$blog_content' WHERE id='" . $_GET['edit_id'] . "'";
+            $update_blog = "UPDATE `blogs` SET blog_name = '$blog_name' , category_id = '$blog_category' , blog_image = '$blog_image' , blog_content = '$blog_content' ,created_on = '$date' WHERE id='" . $_GET['edit_id'] . "'";
             $update_blog_sql = mysqli_query($con, $update_blog);
             $_SESSION['success'] = 'blog Updated Successfully';
             header('location: blogs.php');
             die();
         } else {
-            $blog_add = "INSERT INTO `blogs` (blog_name ,category_id ,blog_image, blog_content) VALUES ('$blog_name','$blog_category','$blog_image','$blog_content')";
+            $user_id = $_SESSION['user_id'];
+            $blog_add = "INSERT INTO `blogs` (blog_name ,category_id ,blog_image, blog_content,user_id,created_on) VALUES ('$blog_name','$blog_category','$blog_image','$blog_content','$user_id','$date')";
             $blog_add_query = mysqli_query($con, $blog_add);
             if ($blog_add_query) {
                 $_SESSION['success'] = 'blog Add Successfully';

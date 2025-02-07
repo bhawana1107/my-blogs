@@ -3,6 +3,11 @@ $errors = [];
 $success = '';
 $category_name = '';
 
+if ($_SESSION['roleid'] !== '1') {
+    header('location: error.php');
+    exit;
+}
+
 if (isset($_GET['edit_id'])) {
     $edit_id = mysqli_real_escape_string($con, trim($_GET['edit_id']));
 

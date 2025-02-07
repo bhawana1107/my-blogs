@@ -9,11 +9,22 @@ if (!empty($_SESSION['success'])) {
     unset($_SESSION['success']);
 }
 
-// ALL DATA FROM BLOG DATABASE
-$existed_blog = "SELECT blogs.*, category.category_name FROM `blogs` LEFT JOIN category ON category.id=blogs.category_id";
 
-$existed_blog_query = mysqli_query($con, $existed_blog);
-$blog_result = mysqli_fetch_all($existed_blog_query, MYSQLI_ASSOC);
+if ($_SESSION['user_id'] == 1) {
+    // ALL DATA FROM BLOG DATABASE
+    $existed_blog = "SELECT blogs.*, category.category_name FROM `blogs` LEFT JOIN category ON category.id=blogs.category_id";
+
+    $existed_blog_query = mysqli_query($con, $existed_blog);
+    $blog_result = mysqli_fetch_all($existed_blog_query, MYSQLI_ASSOC);
+
+}
+else{
+     $puser_id = $_SESSION['user_id'] ;
+    // ALL DATA FROM BLOG DATABASE
+    $existeduser_blog = "SELECT blogs.*, category.category_name FROM `blogs` LEFT JOIN category ON category.id=blogs.category_id WHERE user_id = '$puser_id' ";
+    $existeduser_blog_query = mysqli_query($con, $existeduser_blog);
+    $blog_result = mysqli_fetch_all($existeduser_blog_query, MYSQLI_ASSOC);
+}
 ?>
 
 <!-- HEADER OF THE PAGE -->

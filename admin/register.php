@@ -38,7 +38,8 @@ if (isset($_POST['signup'])) {
    $insertUser = "INSERT INTO users (user_name,email,password,roleid) VALUES
    ('$user_name','$email','$hashPassword','$role_id')" ;
    $insertUserSql = mysqli_query($con, $insertUser);
-   pr($insertUserSql);
+   header('location: login.php');
+   exit();
   }
 }
 }

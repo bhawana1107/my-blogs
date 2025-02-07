@@ -1,5 +1,10 @@
 <?php include_once "./includes/header.php";
 
+if ($_SESSION['roleid'] !== '1') {
+    header('location: error.php');
+    exit;
+}
+
 if (!empty($_SESSION['success'])) {
 
     echo "<script>

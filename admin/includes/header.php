@@ -303,12 +303,14 @@ if (!isset($_SESSION['is_login']) || $_SESSION['is_login'] !== true) {
                         data-lte-toggle="treeview"
                         role="menu"
                         data-accordion="false">
-                        <li class="nav-item ">
-                            <a href="category.php" class="nav-link active">
-                                <i class="nav-icon bi bi-circle"></i>
-                                <p>Categories</p>
-                            </a>
-                        </li>
+                        <?php if ($_SESSION['roleid'] === '1'): ?>
+                            <li class="nav-item ">
+                                <a href="category.php" class="nav-link active">
+                                    <i class="nav-icon bi bi-circle"></i>
+                                    <p>Categories</p>
+                                </a>
+                            </li>
+                        <?php endif; ?>
                         <li class="nav-item ">
                             <a href="blogs.php" class="nav-link active">
                                 <i class="nav-icon bi bi-circle"></i>

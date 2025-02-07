@@ -1,5 +1,18 @@
 <?php
-include('./includes/header.php'); ?>
+include('./includes/header.php');
+
+// CATEGORY DATA
+$category = "SELECT * FROM category";
+$category_sql = mysqli_query($con, $category);
+$category_query = mysqli_fetch_all($category_sql, MYSQLI_ASSOC);
+
+
+// BLOGS DATA
+$blogs = "SELECT blogs.*, category.category_name FROM `blogs` LEFT JOIN category ON category.id=blogs.category_id";
+$blogs_sql = mysqli_query($con, $blogs);
+$blogs_query = mysqli_fetch_all($blogs_sql, MYSQLI_ASSOC);
+pr($blogs_query);
+?>
 
 
 <!-- Topbar Start -->
@@ -31,7 +44,6 @@ include('./includes/header.php'); ?>
 </div>
 <!-- Topbar End -->
 
-
 <!-- Navbar Start -->
 <div class="container-fluid p-0 mb-3">
     <nav class="navbar navbar-expand-lg bg-light navbar-light py-2 py-lg-0 px-lg-5">
@@ -43,18 +55,11 @@ include('./includes/header.php'); ?>
         </button>
         <div class="collapse navbar-collapse justify-content-between px-0 px-lg-3" id="navbarCollapse">
             <div class="navbar-nav mr-auto py-0">
-                <a href="index.html" class="nav-item nav-link active">Home</a>
-                <a href="category.html" class="nav-item nav-link">Categories</a>
-                <a href="single.html" class="nav-item nav-link">Single News</a>
-                <div class="nav-item dropdown">
-                    <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown">Dropdown</a>
-                    <div class="dropdown-menu rounded-0 m-0">
-                        <a href="#" class="dropdown-item">Menu item 1</a>
-                        <a href="#" class="dropdown-item">Menu item 2</a>
-                        <a href="#" class="dropdown-item">Menu item 3</a>
-                    </div>
-                </div>
-                <a href="contact.html" class="nav-item nav-link">Contact</a>
+                <a href="index.php" class="nav-item nav-link active">Home</a>
+                <?php foreach ($category_sql as $key => $result) {   ?>
+                    <a href="category.html" class="nav-item nav-link"><?= $result['category_name'] ?></a>
+                <?php } ?>
+                <a href="contact.html" class="nav-item nav-link">Contact Us</a>
             </div>
             <div class="input-group ml-auto" style="width: 100%; max-width: 300px;">
                 <input type="text" class="form-control" placeholder="Keyword">
@@ -68,69 +73,26 @@ include('./includes/header.php'); ?>
 </div>
 <!-- Navbar End -->
 
-
-<!-- Top News Slider Start -->
-<div class="container-fluid py-3">
-    <div class="container">
-        <div class="owl-carousel owl-carousel-2 carousel-item-3 position-relative">
-            <div class="d-flex">
-                <img src="img/news-100x100-1.jpg" style="width: 80px; height: 80px; object-fit: cover;">
-                <div class="d-flex align-items-center bg-light px-3" style="height: 80px;">
-                    <a class="text-secondary font-weight-semi-bold" href="">Lorem ipsum dolor sit amet consec adipis elit</a>
-                </div>
-            </div>
-            <div class="d-flex">
-                <img src="img/news-100x100-2.jpg" style="width: 80px; height: 80px; object-fit: cover;">
-                <div class="d-flex align-items-center bg-light px-3" style="height: 80px;">
-                    <a class="text-secondary font-weight-semi-bold" href="">Lorem ipsum dolor sit amet consec adipis elit</a>
-                </div>
-            </div>
-            <div class="d-flex">
-                <img src="img/news-100x100-3.jpg" style="width: 80px; height: 80px; object-fit: cover;">
-                <div class="d-flex align-items-center bg-light px-3" style="height: 80px;">
-                    <a class="text-secondary font-weight-semi-bold" href="">Lorem ipsum dolor sit amet consec adipis elit</a>
-                </div>
-            </div>
-            <div class="d-flex">
-                <img src="img/news-100x100-4.jpg" style="width: 80px; height: 80px; object-fit: cover;">
-                <div class="d-flex align-items-center bg-light px-3" style="height: 80px;">
-                    <a class="text-secondary font-weight-semi-bold" href="">Lorem ipsum dolor sit amet consec adipis elit</a>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-<!-- Top News Slider End -->
-
-
 <!-- Main News Slider Start -->
 <div class="container-fluid py-3">
     <div class="container">
         <div class="row">
             <div class="col-lg-8">
                 <div class="owl-carousel owl-carousel-2 carousel-item-1 position-relative mb-3 mb-lg-0">
-                    <div class="position-relative overflow-hidden" style="height: 435px;">
-                        <img class="img-fluid h-100" src="img/news-700x435-1.jpg" style="object-fit: cover;">
-                        <div class="overlay">
-                            <div class="mb-1">
-                                <a class="text-white" href="">Technology</a>
-                                <span class="px-2 text-white">/</span>
-                                <a class="text-white" href="">January 01, 2045</a>
+                    <?php foreach ($blogs_query as $key => $result) {   ?>
+                        <div class="position-relative overflow-hidden" style="height: 435px;">
+                            <img class="img-fluid h-100" src="<?= htmlspecialchars($result['blog_image']) ?>" style="object-fit: cover;">
+                            <div class="overlay">
+                                <div class="mb-1">
+                                    <a class="text-white" href=""><?= $result['category_name'] ?></a>
+                                    <span class="px-2 text-white">/</span>
+                                    <a class="text-white" href=""><?= $result['created_on'] ?></a>
+                                </div>
+                                <a class="h2 m-0 text-white font-weight-bold" href=""><?= $result['blog_content'] ?></a>
                             </div>
-                            <a class="h2 m-0 text-white font-weight-bold" href="">Sanctus amet sed amet ipsum lorem. Dolores et erat et elitr sea sed</a>
                         </div>
-                    </div>
-                    <div class="position-relative overflow-hidden" style="height: 435px;">
-                        <img class="img-fluid h-100" src="img/news-700x435-2.jpg" style="object-fit: cover;">
-                        <div class="overlay">
-                            <div class="mb-1">
-                                <a class="text-white" href="">Technology</a>
-                                <span class="px-2 text-white">/</span>
-                                <a class="text-white" href="">January 01, 2045</a>
-                            </div>
-                            <a class="h2 m-0 text-white font-weight-bold" href="">Sanctus amet sed amet ipsum lorem. Dolores et erat et elitr sea sed</a>
-                        </div>
-                    </div>
+
+                    <?php } ?>
                 </div>
             </div>
             <div class="col-lg-4">
@@ -138,13 +100,16 @@ include('./includes/header.php'); ?>
                     <h3 class="m-0">Categories</h3>
                     <a class="text-secondary font-weight-medium text-decoration-none" href="">View All</a>
                 </div>
-                <div class="position-relative overflow-hidden mb-3" style="height: 80px;">
-                    <img class="img-fluid w-100 h-100" src="img/cat-500x80-1.jpg" style="object-fit: cover;">
-                    <a href="" class="overlay align-items-center justify-content-center h4 m-0 text-white text-decoration-none">
-                        Business
-                    </a>
-                </div>
-                <div class="position-relative overflow-hidden mb-3" style="height: 80px;">
+                <?php foreach ($category_sql as $key => $result) {   ?>
+                    <div class="position-relative overflow-hidden mb-3" style="height: 80px;">
+                        <img class="img-fluid w-100 h-100" src="img/cat-500x80-1.jpg" style="object-fit: cover;">
+                        <a href="" class="overlay align-items-center justify-content-center h4 m-0 text-white text-decoration-none">
+                            <?= $result['category_name'] ?>
+                        </a>
+                    </div>
+                <?php } ?>
+
+                <!-- <div class="position-relative overflow-hidden mb-3" style="height: 80px;">
                     <img class="img-fluid w-100 h-100" src="img/cat-500x80-2.jpg" style="object-fit: cover;">
                     <a href="" class="overlay align-items-center justify-content-center h4 m-0 text-white text-decoration-none">
                         Technology
@@ -161,7 +126,7 @@ include('./includes/header.php'); ?>
                     <a href="" class="overlay align-items-center justify-content-center h4 m-0 text-white text-decoration-none">
                         Sports
                     </a>
-                </div>
+                </div> -->
             </div>
         </div>
     </div>

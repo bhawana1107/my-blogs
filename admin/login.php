@@ -31,6 +31,7 @@ if (isset($_POST['signin'])) {
       $_SESSION['is_login'] = true;
       $_SESSION['user_id'] = $user['id'];
       $_SESSION['user_email'] = $user['email'];
+      $_SESSION['roleid'] = $user['roleid'];
 
       $success = "User Login Successfully";
       header('location: index.php');
