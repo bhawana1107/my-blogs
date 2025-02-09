@@ -1,77 +1,6 @@
 <?php
 include('./includes/header.php');
-
-// CATEGORY DATA
-$category = "SELECT * FROM category WHERE category_status = 1";
-$category_sql = mysqli_query($con, $category);
-$category_query = mysqli_fetch_all($category_sql, MYSQLI_ASSOC);
-
-
-// BLOGS DATA
-$blogs = "SELECT blogs.*, category.category_name FROM `blogs` LEFT JOIN category ON category.id=blogs.category_id";
-$blogs_sql = mysqli_query($con, $blogs);
-$blogs_query = mysqli_fetch_all($blogs_sql, MYSQLI_ASSOC);
-// pr($blogs_query);
 ?>
-
-
-<!-- Topbar Start -->
-<div class="container-fluid">
-    <div class="row align-items-center bg-light px-lg-5">
-        <div class="col-12 col-md-8">
-            <div class="d-flex justify-content-between">
-                <div class="bg-primary text-white text-center py-2" style="width: 100px;">Tranding</div>
-                <div class="owl-carousel owl-carousel-1 tranding-carousel position-relative d-inline-flex align-items-center ml-3" style="width: calc(100% - 100px); padding-left: 90px;">
-                    <div class="text-truncate"><a class="text-secondary" href="">Labore sit justo amet eos sed, et sanctus dolor diam eos</a></div>
-                    <div class="text-truncate"><a class="text-secondary" href="">Gubergren elitr amet eirmod et lorem diam elitr, ut est erat Gubergren elitr amet eirmod et lorem diam elitr, ut est erat</a></div>
-                </div>
-            </div>
-        </div>
-        <div class="col-md-4 text-right d-none d-md-block">
-            Monday, January 01, 2045
-        </div>
-    </div>
-    <div class="row align-items-center py-2 px-lg-5">
-        <div class="col-lg-4">
-            <a href="" class="navbar-brand d-none d-lg-block">
-                <h1 class="m-0 display-5 text-uppercase"><span class="text-primary">News</span>Room</h1>
-            </a>
-        </div>
-        <div class="col-lg-8 text-center text-lg-right">
-            <img class="img-fluid" src="img/ads-700x70.jpg" alt="">
-        </div>
-    </div>
-</div>
-<!-- Topbar End -->
-
-<!-- Navbar Start -->
-<div class="container-fluid p-0 mb-3">
-    <nav class="navbar navbar-expand-lg bg-light navbar-light py-2 py-lg-0 px-lg-5">
-        <a href="" class="navbar-brand d-block d-lg-none">
-            <h1 class="m-0 display-5 text-uppercase"><span class="text-primary">News</span>Room</h1>
-        </a>
-        <button type="button" class="navbar-toggler" data-toggle="collapse" data-target="#navbarCollapse">
-            <span class="navbar-toggler-icon"></span>
-        </button>
-        <div class="collapse navbar-collapse justify-content-between px-0 px-lg-3" id="navbarCollapse">
-            <div class="navbar-nav mr-auto py-0">
-                <a href="index.php" class="nav-item nav-link active">Home</a>
-                <?php foreach ($category_sql as $key => $result) {   ?>
-                    <a href="category.html" class="nav-item nav-link"><?= $result['category_name'] ?></a>
-                <?php } ?>
-                <a href="contact.html" class="nav-item nav-link">Contact Us</a>
-            </div>
-            <div class="input-group ml-auto" style="width: 100%; max-width: 300px;">
-                <input type="text" class="form-control" placeholder="Keyword">
-                <div class="input-group-append">
-                    <button class="input-group-text text-secondary"><i
-                            class="fa fa-search"></i></button>
-                </div>
-            </div>
-        </div>
-    </nav>
-</div>
-<!-- Navbar End -->
 
 <!-- Main News Slider Start -->
 <div class="container-fluid py-3">
@@ -79,28 +8,32 @@ $blogs_query = mysqli_fetch_all($blogs_sql, MYSQLI_ASSOC);
         <div class="row">
             <div class="col-lg-8">
                 <div class="owl-carousel owl-carousel-2 carousel-item-1 position-relative mb-3 mb-lg-0">
-                    <?php foreach ($blogs_query as $key => $result) {   ?>
+                    <?php foreach (blogsData($con) as $key => $result) {  
+                      ?>
                         <div class="position-relative overflow-hidden" style="height: 435px;">
-                            <img class="img-fluid h-100" src="<?= htmlspecialchars($result['blog_image']) ?>" style="object-fit: cover;">
+                            <img class="img-fluid h-100" src="./admin/<?= htmlspecialchars($result['blog_image']) ?>" style="object-fit: cover;">
                             <div class="overlay">
                                 <div class="mb-1">
-                                    <a class="text-white" href=""><?= $result['category_name'] ?></a>
+                                    <a class="text-white"><?= $result['category_name'] ?></a>
                                     <span class="px-2 text-white">/</span>
-                                    <a class="text-white" href=""><?= $result['created_on'] ?></a>
+                                    <a class="text-white"><?= $result['created_on'] ?></a>
                                 </div>
-                                <a class="h2 m-0 text-white font-weight-bold" href=""><?= $result['blog_content'] ?></a>
+                                <a class="h6 m-0 text-white font-weight-bold"
+                                 href="single.php?id=<?= $result['id']?>">
+                                    <?= substr(strip_tags(html_entity_decode($result['blog_content'])), 0, 100) ?></a>
                             </div>
                         </div>
 
                     <?php } ?>
+
                 </div>
             </div>
-            <div class="col-lg-4">
+            <div class="col-lg-4" style="overflow-y:scroll;height:430px;">
                 <div class="d-flex align-items-center justify-content-between bg-light py-2 px-4 mb-3">
                     <h3 class="m-0">Categories</h3>
                     <a class="text-secondary font-weight-medium text-decoration-none" href="">View All</a>
                 </div>
-                <?php foreach ($category_sql as $key => $result) {   ?>
+                <?php foreach (categoryData($con) as $key => $result) {   ?>
                     <div class="position-relative overflow-hidden mb-3" style="height: 80px;">
                         <img class="img-fluid w-100 h-100" src="img/cat-500x80-1.jpg" style="object-fit: cover;">
                         <a href="" class="overlay align-items-center justify-content-center h4 m-0 text-white text-decoration-none">
@@ -108,31 +41,11 @@ $blogs_query = mysqli_fetch_all($blogs_sql, MYSQLI_ASSOC);
                         </a>
                     </div>
                 <?php } ?>
-
-                <!-- <div class="position-relative overflow-hidden mb-3" style="height: 80px;">
-                    <img class="img-fluid w-100 h-100" src="img/cat-500x80-2.jpg" style="object-fit: cover;">
-                    <a href="" class="overlay align-items-center justify-content-center h4 m-0 text-white text-decoration-none">
-                        Technology
-                    </a>
-                </div>
-                <div class="position-relative overflow-hidden mb-3" style="height: 80px;">
-                    <img class="img-fluid w-100 h-100" src="img/cat-500x80-3.jpg" style="object-fit: cover;">
-                    <a href="" class="overlay align-items-center justify-content-center h4 m-0 text-white text-decoration-none">
-                        Entertainment
-                    </a>
-                </div>
-                <div class="position-relative overflow-hidden" style="height: 80px;">
-                    <img class="img-fluid w-100 h-100" src="img/cat-500x80-4.jpg" style="object-fit: cover;">
-                    <a href="" class="overlay align-items-center justify-content-center h4 m-0 text-white text-decoration-none">
-                        Sports
-                    </a>
-                </div> -->
             </div>
         </div>
     </div>
 </div>
 <!-- Main News Slider End -->
-
 
 <!-- Featured News Slider Start -->
 <div class="container-fluid py-3">
@@ -142,110 +55,47 @@ $blogs_query = mysqli_fetch_all($blogs_sql, MYSQLI_ASSOC);
             <a class="text-secondary font-weight-medium text-decoration-none" href="">View All</a>
         </div>
         <div class="owl-carousel owl-carousel-2 carousel-item-4 position-relative">
-            <div class="position-relative overflow-hidden" style="height: 300px;">
-                <img class="img-fluid w-100 h-100" src="img/news-300x300-1.jpg" style="object-fit: cover;">
-                <div class="overlay">
-                    <div class="mb-1" style="font-size: 13px;">
-                        <a class="text-white" href="">Technology</a>
-                        <span class="px-1 text-white">/</span>
-                        <a class="text-white" href="">January 01, 2045</a>
+            <?php foreach (blogsData($con) as $key => $result) {   ?>
+                <div class="position-relative overflow-hidden" style="height: 300px;">
+                    <img class="img-fluid w-100 h-100" src="./admin/<?= htmlspecialchars($result['blog_image']) ?>" style="object-fit: cover;">
+                    <div class="overlay">
+                        <div class="mb-1" style="font-size: 13px;">
+                            <a class="text-white" href=""><?= $result['category_name'] ?></a>
+                            <span class="px-1 text-white">/</span>
+                            <a class="text-white" href=""><?= $result['created_on'] ?></a>
+                        </div>
+                        <a class="h6 m-0 text-white font-weight-bold" href=""><?= substr(strip_tags(html_entity_decode($result['blog_content'])), 0, 100) ?></a>
                     </div>
-                    <a class="h4 m-0 text-white" href="">Sanctus amet sed ipsum lorem</a>
                 </div>
-            </div>
-            <div class="position-relative overflow-hidden" style="height: 300px;">
-                <img class="img-fluid w-100 h-100" src="img/news-300x300-2.jpg" style="object-fit: cover;">
-                <div class="overlay">
-                    <div class="mb-1" style="font-size: 13px;">
-                        <a class="text-white" href="">Technology</a>
-                        <span class="px-1 text-white">/</span>
-                        <a class="text-white" href="">January 01, 2045</a>
-                    </div>
-                    <a class="h4 m-0 text-white" href="">Sanctus amet sed ipsum lorem</a>
-                </div>
-            </div>
-            <div class="position-relative overflow-hidden" style="height: 300px;">
-                <img class="img-fluid w-100 h-100" src="img/news-300x300-3.jpg" style="object-fit: cover;">
-                <div class="overlay">
-                    <div class="mb-1" style="font-size: 13px;">
-                        <a class="text-white" href="">Technology</a>
-                        <span class="px-1 text-white">/</span>
-                        <a class="text-white" href="">January 01, 2045</a>
-                    </div>
-                    <a class="h4 m-0 text-white" href="">Sanctus amet sed ipsum lorem</a>
-                </div>
-            </div>
-            <div class="position-relative overflow-hidden" style="height: 300px;">
-                <img class="img-fluid w-100 h-100" src="img/news-300x300-4.jpg" style="object-fit: cover;">
-                <div class="overlay">
-                    <div class="mb-1" style="font-size: 13px;">
-                        <a class="text-white" href="">Technology</a>
-                        <span class="px-1 text-white">/</span>
-                        <a class="text-white" href="">January 01, 2045</a>
-                    </div>
-                    <a class="h4 m-0 text-white" href="">Sanctus amet sed ipsum lorem</a>
-                </div>
-            </div>
-            <div class="position-relative overflow-hidden" style="height: 300px;">
-                <img class="img-fluid w-100 h-100" src="img/news-300x300-5.jpg" style="object-fit: cover;">
-                <div class="overlay">
-                    <div class="mb-1" style="font-size: 13px;">
-                        <a class="text-white" href="">Technology</a>
-                        <span class="px-1 text-white">/</span>
-                        <a class="text-white" href="">January 01, 2045</a>
-                    </div>
-                    <a class="h4 m-0 text-white" href="">Sanctus amet sed ipsum lorem</a>
-                </div>
-            </div>
+            <?php } ?>
         </div>
     </div>
 </div>
 </div>
 <!-- Featured News Slider End -->
 
-
 <!-- Category News Slider Start -->
 <div class="container-fluid">
     <div class="container">
         <div class="row">
-            <div class="col-lg-6 py-3">
+            <div class="col-lg-6 py-3" style="height:300px">
                 <div class="bg-light py-2 px-4 mb-3">
                     <h3 class="m-0">Business</h3>
                 </div>
                 <div class="owl-carousel owl-carousel-3 carousel-item-2 position-relative">
-                    <div class="position-relative">
-                        <img class="img-fluid w-100" src="img/news-500x280-1.jpg" style="object-fit: cover;">
-                        <div class="overlay position-relative bg-light">
-                            <div class="mb-2" style="font-size: 13px;">
-                                <a href="">Technology</a>
-                                <span class="px-1">/</span>
-                                <span>January 01, 2045</span>
+                    <?php foreach (blogsBusiness($con) as $key => $result) {   ?>
+                        <div class="position-relative">
+                            <img class="img-fluid w-100" src="./admin/<?= htmlspecialchars($result['blog_image']) ?>" style="object-fit: cover;">
+                            <div class="overlay position-relative bg-light">
+                                <div class="mb-2" style="font-size: 13px;">
+                                    <a href=""><?= $result['category_name'] ?></a>
+                                    <span class="px-1">/</span>
+                                    <span><?= $result['created_on'] ?></span>
+                                </div>
+                                <a class="h6 m-0 " href=""><?= substr(strip_tags(html_entity_decode($result['blog_content'])), 0, 100) ?></a>
                             </div>
-                            <a class="h4 m-0" href="">Sanctus amet sed ipsum lorem</a>
                         </div>
-                    </div>
-                    <div class="position-relative">
-                        <img class="img-fluid w-100" src="img/news-500x280-2.jpg" style="object-fit: cover;">
-                        <div class="overlay position-relative bg-light">
-                            <div class="mb-2" style="font-size: 13px;">
-                                <a href="">Technology</a>
-                                <span class="px-1">/</span>
-                                <span>January 01, 2045</span>
-                            </div>
-                            <a class="h4 m-0" href="">Sanctus amet sed ipsum lorem</a>
-                        </div>
-                    </div>
-                    <div class="position-relative">
-                        <img class="img-fluid w-100" src="img/news-500x280-3.jpg" style="object-fit: cover;">
-                        <div class="overlay position-relative bg-light">
-                            <div class="mb-2" style="font-size: 13px;">
-                                <a href="">Technology</a>
-                                <span class="px-1">/</span>
-                                <span>January 01, 2045</span>
-                            </div>
-                            <a class="h4 m-0" href="">Sanctus amet sed ipsum lorem</a>
-                        </div>
-                    </div>
+                    <?php } ?>
                 </div>
             </div>
             <div class="col-lg-6 py-3">
@@ -253,39 +103,20 @@ $blogs_query = mysqli_fetch_all($blogs_sql, MYSQLI_ASSOC);
                     <h3 class="m-0">Technology</h3>
                 </div>
                 <div class="owl-carousel owl-carousel-3 carousel-item-2 position-relative">
-                    <div class="position-relative">
-                        <img class="img-fluid w-100" src="img/news-500x280-4.jpg" style="object-fit: cover;">
-                        <div class="overlay position-relative bg-light">
-                            <div class="mb-2" style="font-size: 13px;">
-                                <a href="">Technology</a>
-                                <span class="px-1">/</span>
-                                <span>January 01, 2045</span>
+                    <?php foreach (blogstech($con) as $key => $result) {   ?>
+                        <div class="position-relative">
+                            <img class="img-fluid w-100" src="./admin/<?= htmlspecialchars($result['blog_image']) ?>" style="object-fit: cover;">
+                            <div class="overlay position-relative bg-light">
+                                <div class="mb-2" style="font-size: 13px;">
+                                    <a href=""><?= $result['category_name'] ?></a>
+                                    <span class="px-1">/</span>
+                                    <span><?= $result['created_on'] ?></span>
+                                </div>
+                                <a class="h6 m-0 " href=""><?= substr(strip_tags(html_entity_decode($result['blog_content'])), 0, 100) ?></a>
                             </div>
-                            <a class="h4 m-0" href="">Sanctus amet sed ipsum lorem</a>
                         </div>
-                    </div>
-                    <div class="position-relative">
-                        <img class="img-fluid w-100" src="img/news-500x280-5.jpg" style="object-fit: cover;">
-                        <div class="overlay position-relative bg-light">
-                            <div class="mb-2" style="font-size: 13px;">
-                                <a href="">Technology</a>
-                                <span class="px-1">/</span>
-                                <span>January 01, 2045</span>
-                            </div>
-                            <a class="h4 m-0" href="">Sanctus amet sed ipsum lorem</a>
-                        </div>
-                    </div>
-                    <div class="position-relative">
-                        <img class="img-fluid w-100" src="img/news-500x280-6.jpg" style="object-fit: cover;">
-                        <div class="overlay position-relative bg-light">
-                            <div class="mb-2" style="font-size: 13px;">
-                                <a href="">Technology</a>
-                                <span class="px-1">/</span>
-                                <span>January 01, 2045</span>
-                            </div>
-                            <a class="h4 m-0" href="">Sanctus amet sed ipsum lorem</a>
-                        </div>
-                    </div>
+                    <?php } ?>
+
                 </div>
             </div>
         </div>

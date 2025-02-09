@@ -17,7 +17,6 @@ $blog_image = "";
 // IF EDIT DONE
 if (isset($_GET['edit_id'])) {
     $edit_id = mysqli_real_escape_string($con, trim($_GET['edit_id']));
-
     $existed_blog = "SELECT * FROM `blogs` WHERE id = '$edit_id'";
     $existed_blog_sql = mysqli_query($con, $existed_blog);
     $existed_blog_sql_res = mysqli_fetch_assoc($existed_blog_sql);
@@ -47,7 +46,7 @@ if (isset($_POST['submit'])) {
         }
     }
 
-    if ($blog_name === '' || $blog_category === 'choose' || $blog_content === '' || $blog_image === '' ) {
+    if ($blog_name === '' || $blog_category === 'choose' || $blog_content === '' || $blog_image === '') {
         $errors[] = 'Please fill all details';
     }
 
@@ -70,7 +69,10 @@ if (isset($_POST['submit'])) {
     if (empty($errors)) {
 
         if ($_GET['edit_id']) {
-            $update_blog = "UPDATE `blogs` SET blog_name = '$blog_name' , category_id = '$blog_category' , blog_image = '$blog_image' , blog_content = '$blog_content' ,created_on = '$date' WHERE id='" . $_GET['edit_id'] . "'";
+            $update_blog = "UPDATE `blogs` SET blog_name = '$blog_name' ,"
+                . " category_id = '$blog_category' , blog_image = '$blog_image' ,"
+                . " blog_content = '$blog_content' ,created_on = '$date'"
+                . " WHERE id='" . $_GET['edit_id'] . "'";
             $update_blog_sql = mysqli_query($con, $update_blog);
             $_SESSION['success'] = 'blog Updated Successfully';
             header('location: blogs.php');

@@ -30,7 +30,7 @@ if (isset($_POST['signin'])) {
       // store data in session
       $_SESSION['is_login'] = true;
       $_SESSION['user_id'] = $user['id'];
-      // $_SESSION['user_name'] = $user['user_name'];
+      $_SESSION['user_name'] = $user['user_name'];
       $_SESSION['user_email'] = $user['email'];
       $_SESSION['roleid'] = $user['roleid'];
 

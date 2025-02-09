@@ -235,34 +235,25 @@ if (!isset($_SESSION['is_login']) || $_SESSION['is_login'] !== true) {
                                 src="./img/user_img.png"
                                 class="user-image rounded-circle shadow"
                                 alt="User Image" />
-                            <!-- <span class="d-none d-md-inline">Alexander Pierce</span> -->
+                            <span class="d-none d-md-inline"><?= $_SESSION['user_name'] ?></span>
                         </a>
                         <ul class="dropdown-menu dropdown-menu-lg dropdown-menu-end">
 
-                            <!-- <li class="user-header text-bg-primary">
+                            <!-- <li class="user-header text-bg-primary" style="min-height: 117px;">
                                 <img
-                                    src="../assets/img/user2-160x160.jpg"
+                                    src="./img/user_img.png"
                                     class="rounded-circle shadow"
-                                    alt="User Image" /> -->
-                            <!-- <p>
-                                    Alexander Pierce - Web Developer
-                                    <small>Member since Nov. 2023</small>
-                                </p> -->
-                            <!-- </li> -->
-
-                            <!-- <li class="user-body">
-                              
-                                <div classc="row">
-                                    <div class="col-4 text-center"><a href="#">Followers</a></div>
-                                    <div class="col-4 text-center"><a href="#">Sales</a></div>
-                                    <div class="col-4 text-center"><a href="#">Friends</a></div>
-                                </div>
-                               
+                                    alt="User Image" />
+                                <p>
+                                    hkf
+                                </p>
                             </li> -->
+
+
 
                             <!--begin::Menu Footer-->
                             <li class="user-footer">
-                                <a href="#" class="btn btn-default btn-flat">Profile</a>
+                                <a href="profile_edit.php" class="btn btn-default btn-flat">Profile</a>
                                 <a href="signout.php" class="btn btn-default btn-flat float-end">Sign out</a>
                             </li>
                             <!--end::Menu Footer-->
@@ -288,7 +279,7 @@ if (!isset($_SESSION['is_login']) || $_SESSION['is_login'] !== true) {
                         class="brand-image opacity-75 shadow" /> -->
                     <!--end::Brand Image-->
                     <!--begin::Brand Text-->
-                    <span class="brand-text fw-light">My Blog</span>
+                    <span class="brand-text fw-light text-white " style="text-align: center;font-size:35px;">My Blogs</span>
                     <!--end::Brand Text-->
                 </a>
                 <!--end::Brand Link-->
@@ -310,6 +301,10 @@ if (!isset($_SESSION['is_login']) || $_SESSION['is_login'] !== true) {
                                     <p>Categories</p>
                                 </a>
                             </li>
+                            <li class="nav-item"><a href="users_details.php" class="nav-link active">
+                                    <i class="nav-icon bi bi-circle"></i>
+                                    <p>Users</p>
+                                </a></li>
                         <?php endif; ?>
                         <li class="nav-item ">
                             <a href="blogs.php" class="nav-link active">
