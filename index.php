@@ -1,5 +1,18 @@
 <?php
 include('./includes/header.php');
+
+$category = "SELECT category.category_name, COUNT(blogs.category_id) AS NumberOfCategory
+FROM blogs LEFT JOIN category ON blogs.category_id = category.id
+GROUP BY category_id ORDER BY COUNT(blogs.category_id) DESC ";
+
+$category_sql = mysqli_query($con,$category);
+$category_sqli = mysqli_fetch_all($category_sql,MYSQLI_ASSOC);
+pr($category_sqli);
+
+$blogs = "SELECT * 'blogs'   ORDER BY id DESC";
+$blogs_sql = mysqli_query($con, $blogs);
+// $blogs_sqli = mysqli_fetch_all($blogs_sql);
+pr($blogs_sql);
 ?>
 
 <!-- Main News Slider Start -->
