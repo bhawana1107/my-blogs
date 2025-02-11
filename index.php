@@ -1,18 +1,11 @@
 <?php
 include('./includes/header.php');
 
-$category = "SELECT category.category_name, COUNT(blogs.category_id) AS NumberOfCategory
+$category = "SELECT category.category_name, COUNT(blogs.category_id) AS NumberOfCategory, MIN(category.id) as cat_id 
 FROM blogs LEFT JOIN category ON blogs.category_id = category.id
-GROUP BY category_id ORDER BY COUNT(blogs.category_id) DESC ";
-
-$category_sql = mysqli_query($con,$category);
-$category_sqli = mysqli_fetch_all($category_sql,MYSQLI_ASSOC);
-pr($category_sqli);
-
-$blogs = "SELECT * 'blogs'   ORDER BY id DESC";
-$blogs_sql = mysqli_query($con, $blogs);
-// $blogs_sqli = mysqli_fetch_all($blogs_sql);
-pr($blogs_sql);
+GROUP BY category_id ORDER BY COUNT(blogs.category_id) DESC LIMIT 4";
+$category_sql = mysqli_query($con, $category);
+$category_sqli = mysqli_fetch_all($category_sql, MYSQLI_ASSOC);
 ?>
 
 <!-- Main News Slider Start -->
@@ -21,8 +14,8 @@ pr($blogs_sql);
         <div class="row">
             <div class="col-lg-8">
                 <div class="owl-carousel owl-carousel-2 carousel-item-1 position-relative mb-3 mb-lg-0">
-                    <?php foreach (blogsData($con) as $key => $result) {  
-                      ?>
+                    <?php foreach (blogsData($con) as $key => $result) {
+                    ?>
                         <div class="position-relative overflow-hidden" style="height: 435px;">
                             <img class="img-fluid h-100" src="./admin/<?= htmlspecialchars($result['blog_image']) ?>" style="object-fit: cover;">
                             <div class="overlay">
@@ -32,7 +25,7 @@ pr($blogs_sql);
                                     <a class="text-white"><?= $result['created_on'] ?></a>
                                 </div>
                                 <a class="h6 m-0 text-white font-weight-bold"
-                                 href="single.php?id=<?= $result['id']?>">
+                                    href="single.php?id=<?= $result['id'] ?>">
                                     <?= substr(strip_tags(html_entity_decode($result['blog_content'])), 0, 100) ?></a>
                             </div>
                         </div>
@@ -91,47 +84,57 @@ pr($blogs_sql);
 <div class="container-fluid">
     <div class="container">
         <div class="row">
-            <div class="col-lg-6 py-3" style="height:300px">
-                <div class="bg-light py-2 px-4 mb-3">
-                    <h3 class="m-0">Business</h3>
-                </div>
-                <div class="owl-carousel owl-carousel-3 carousel-item-2 position-relative">
-                    <?php foreach (blogsBusiness($con) as $key => $result) {   ?>
-                        <div class="position-relative">
-                            <img class="img-fluid w-100" src="./admin/<?= htmlspecialchars($result['blog_image']) ?>" style="object-fit: cover;">
-                            <div class="overlay position-relative bg-light">
-                                <div class="mb-2" style="font-size: 13px;">
-                                    <a href=""><?= $result['category_name'] ?></a>
-                                    <span class="px-1">/</span>
-                                    <span><?= $result['created_on'] ?></span>
-                                </div>
-                                <a class="h6 m-0 " href=""><?= substr(strip_tags(html_entity_decode($result['blog_content'])), 0, 100) ?></a>
-                            </div>
-                        </div>
-                    <?php } ?>
-                </div>
-            </div>
-            <div class="col-lg-6 py-3">
-                <div class="bg-light py-2 px-4 mb-3">
-                    <h3 class="m-0">Technology</h3>
-                </div>
-                <div class="owl-carousel owl-carousel-3 carousel-item-2 position-relative">
-                    <?php foreach (blogstech($con) as $key => $result) {   ?>
-                        <div class="position-relative">
-                            <img class="img-fluid w-100" src="./admin/<?= htmlspecialchars($result['blog_image']) ?>" style="object-fit: cover;">
-                            <div class="overlay position-relative bg-light">
-                                <div class="mb-2" style="font-size: 13px;">
-                                    <a href=""><?= $result['category_name'] ?></a>
-                                    <span class="px-1">/</span>
-                                    <span><?= $result['created_on'] ?></span>
-                                </div>
-                                <a class="h6 m-0 " href=""><?= substr(strip_tags(html_entity_decode($result['blog_content'])), 0, 100) ?></a>
-                            </div>
-                        </div>
-                    <?php } ?>
 
-                </div>
+            <div class="col-lg-6 py-3" style="height:300px">
+                <?php foreach ($category_sqli as $key => $category_res) {
+                    $cat_id = $category_res['cat_id'];
+                    $blogs = "SELECT * FROM `blogs` WHERE category_id = $cat_id ORDER BY id DESC";
+                    $blogs_sql = mysqli_query($con, $blogs);
+                    $blogs_sqli = mysqli_fetch_all($blogs_sql, MYSQLI_ASSOC);
+                    // pr($blogs_sqli);
+                ?>
+                    <div class="bg-light py-2 px-4 mb-3">
+                        <h3 class="m-0"><?= $category_res['category_name'] ?></h3>
+                    </div>
+                    <!-- <div class="owl-carousel owl-carousel-3 carousel-item-2 position-relative">
+                    <?php foreach ($blogs_sqli as $key => $result) {   ?>
+                        <div class="position-relative">
+                            <img class="img-fluid w-100" src="./admin/<?= htmlspecialchars($result['blog_image']) ?>" style="object-fit: cover;">
+                            <div class="overlay position-relative bg-light">
+                                <div class="mb-2" style="font-size: 13px;">
+                                    <a href=""><?= $result['blog_name'] ?></a>
+                                    <span class="px-1">/</span>
+                                    <span><?= $result['created_on'] ?></span>
+                                </div>
+                                <a class="h6 m-0 " href=""><?= substr(strip_tags(html_entity_decode($result['blog_content'])), 0, 100) ?></a>
+                            </div>
+                        </div>
+                    <?php } ?> -->
+                <?php
+                } ?>
+                <!-- </div> -->
             </div>
+            <!-- <div class="col-lg-6 py-3">
+                    <div class="bg-light py-2 px-4 mb-3">
+                        <h3 class="m-0">Technology</h3>
+                    </div>
+                    <div class="owl-carousel owl-carousel-3 carousel-item-2 position-relative">
+                        <?php foreach (blogstech($con) as $key => $result) {   ?>
+                            <div class="position-relative">
+                                <img class="img-fluid w-100" src="./admin/<?= htmlspecialchars($result['blog_image']) ?>" style="object-fit: cover;">
+                                <div class="overlay position-relative bg-light">
+                                    <div class="mb-2" style="font-size: 13px;">
+                                        <a href=""><?= $result['category_name'] ?></a>
+                                        <span class="px-1">/</span>
+                                        <span><?= $result['created_on'] ?></span>
+                                    </div>
+                                    <a class="h6 m-0 " href=""><?= substr(strip_tags(html_entity_decode($result['blog_content'])), 0, 100) ?></a>
+                                </div>
+                            </div>
+                        <?php } ?>
+
+                    </div>
+                </div> -->
         </div>
     </div>
 </div>
@@ -140,7 +143,7 @@ pr($blogs_sql);
 
 
 <!-- Category News Slider Start -->
-<div class="container-fluid">
+<!-- <div class="container-fluid">
     <div class="container">
         <div class="row">
             <div class="col-lg-6 py-3">
@@ -225,7 +228,7 @@ pr($blogs_sql);
             </div>
         </div>
     </div>
-</div>
+</div> -->
 </div>
 <!-- Category News Slider End -->
 
