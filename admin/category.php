@@ -51,6 +51,7 @@ $existed_category_result = mysqli_fetch_all($existed_category_sql, MYSQLI_ASSOC)
                                     <th style="width:20px;">S.No</th>
                                     <th>Category Name</th>
                                     <th>Category Status</th>
+                                    <th>On Navbar</th>
                                     <th>Actions</th>
                                 </tr>
                             </thead>
@@ -75,6 +76,19 @@ $existed_category_result = mysqli_fetch_all($existed_category_sql, MYSQLI_ASSOC)
                                                 </form>
                                             </td>
                                             <td>
+                                                <form action="category_status.php" method="post">
+                                                    <input type="hidden" name="navbar_id" value="<?= $category_res['id'] ?>">
+                                                    <?php if ($category_res['on_navbar'] == 1) { ?>
+                                                        <input type="hidden" name="navbar" value="0">
+                                                        <button type="submit" class="btn btn-success" name="navbar_btn">On Navbar</button>
+                                                    <?php } else { ?>
+                                                        <input type="hidden" name="navbar" value="1">
+                                                        <button type="submit" class="btn btn-danger" name="navbar_btn">Off Navbar</button>
+                                                    <?php } ?>
+                                                </form>
+                                            </td>
+                                            <td>
+
                                                 <div class="d-flex gap-3">
                                                     <form action="manage_category.php" method="get">
                                                         <input type="hidden" name="edit_id" value="<?= $category_res['id'] ?>">

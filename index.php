@@ -37,7 +37,7 @@ $category_sqli = mysqli_fetch_all($category_sql, MYSQLI_ASSOC);
             <div class="col-lg-4" style="overflow-y:scroll;height:430px;">
                 <div class="d-flex align-items-center justify-content-between bg-light py-2 px-4 mb-3">
                     <h3 class="m-0">Categories</h3>
-                    <a class="text-secondary font-weight-medium text-decoration-none" href="">View All</a>
+                    <a class="text-secondary font-weight-medium text-decoration-none" href="all_categories.php">View All</a>
                 </div>
                 <?php foreach (categoryData($con) as $key => $result) {   ?>
                     <div class="position-relative overflow-hidden mb-3" style="height: 80px;">
@@ -83,48 +83,26 @@ $category_sqli = mysqli_fetch_all($category_sql, MYSQLI_ASSOC);
 <!-- Category News Slider Start -->
 <div class="container-fluid">
     <div class="container">
-        <div class="row">
 
-            <div class="col-lg-6 py-3" style="height:300px">
-                <?php foreach ($category_sqli as $key => $category_res) {
-                    $cat_id = $category_res['cat_id'];
-                    $blogs = "SELECT * FROM `blogs` WHERE category_id = $cat_id ORDER BY id DESC";
-                    $blogs_sql = mysqli_query($con, $blogs);
-                    $blogs_sqli = mysqli_fetch_all($blogs_sql, MYSQLI_ASSOC);
-                    // pr($blogs_sqli);
-                ?>
+        <div class="row">
+            <?php foreach ($category_sqli as $key => $category_res) {
+                $cat_id = $category_res['cat_id'];
+                $blogs = "SELECT * FROM `blogs` WHERE category_id = $cat_id ORDER BY id DESC";
+                $blogs_sql = mysqli_query($con, $blogs);
+                $blogs_sqli = mysqli_fetch_all($blogs_sql, MYSQLI_ASSOC);
+            ?>
+                <div class="col-lg-6 py-3">
+
                     <div class="bg-light py-2 px-4 mb-3">
                         <h3 class="m-0"><?= $category_res['category_name'] ?></h3>
                     </div>
-                    <!-- <div class="owl-carousel owl-carousel-3 carousel-item-2 position-relative">
-                    <?php foreach ($blogs_sqli as $key => $result) {   ?>
-                        <div class="position-relative">
-                            <img class="img-fluid w-100" src="./admin/<?= htmlspecialchars($result['blog_image']) ?>" style="object-fit: cover;">
-                            <div class="overlay position-relative bg-light">
-                                <div class="mb-2" style="font-size: 13px;">
-                                    <a href=""><?= $result['blog_name'] ?></a>
-                                    <span class="px-1">/</span>
-                                    <span><?= $result['created_on'] ?></span>
-                                </div>
-                                <a class="h6 m-0 " href=""><?= substr(strip_tags(html_entity_decode($result['blog_content'])), 0, 100) ?></a>
-                            </div>
-                        </div>
-                    <?php } ?> -->
-                <?php
-                } ?>
-                <!-- </div> -->
-            </div>
-            <!-- <div class="col-lg-6 py-3">
-                    <div class="bg-light py-2 px-4 mb-3">
-                        <h3 class="m-0">Technology</h3>
-                    </div>
                     <div class="owl-carousel owl-carousel-3 carousel-item-2 position-relative">
-                        <?php foreach (blogstech($con) as $key => $result) {   ?>
+                        <?php foreach ($blogs_sqli as $key => $result) {   ?>
                             <div class="position-relative">
                                 <img class="img-fluid w-100" src="./admin/<?= htmlspecialchars($result['blog_image']) ?>" style="object-fit: cover;">
                                 <div class="overlay position-relative bg-light">
                                     <div class="mb-2" style="font-size: 13px;">
-                                        <a href=""><?= $result['category_name'] ?></a>
+                                        <a href=""><?= $result['blog_name'] ?></a>
                                         <span class="px-1">/</span>
                                         <span><?= $result['created_on'] ?></span>
                                     </div>
@@ -134,8 +112,11 @@ $category_sqli = mysqli_fetch_all($category_sql, MYSQLI_ASSOC);
                         <?php } ?>
 
                     </div>
-                </div> -->
+                </div>
+            <?php
+            } ?>
         </div>
+
     </div>
 </div>
 </div>

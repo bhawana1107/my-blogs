@@ -14,10 +14,19 @@ function prx($array)
     die;
 }
 
+// category to show on navbar
+function NavbarCategory($con,$OnNavbar,$limit)
+{
+    $category = "SELECT * FROM `category` WHERE on_navbar = $OnNavbar LIMIT $limit";
+    $category_sql = mysqli_query($con, $category);
+    $category_query = mysqli_fetch_all($category_sql, MYSQLI_ASSOC);
+    return $category_query;
+}
+
 // Category all active data 
 function categoryData($con)
 {
-    $category = "SELECT * FROM category WHERE category_status = 1 LIMIT 5";
+    $category = "SELECT * FROM category WHERE category_status = 1";
     $category_sql = mysqli_query($con, $category);
     $category_query = mysqli_fetch_all($category_sql, MYSQLI_ASSOC);
     return $category_query;

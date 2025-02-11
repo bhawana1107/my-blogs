@@ -19,3 +19,22 @@ if (isset($_POST['status_btn'])) {
         echo 'Something Went Wrong';
     }
 }
+
+// Navbar Check
+if (isset($_POST['navbar_btn'])) {
+    $navbar_id = mysqli_real_escape_string($con, trim($_POST['navbar_id']));
+    $navbar = mysqli_real_escape_string($con, trim($_POST['navbar']));
+
+    // Status Update Query
+    $navbar_Update = "UPDATE `category` SET on_navbar = '$navbar' WHERE id = '$navbar_id'";
+    $navbar_query = mysqli_query($con, $navbar_Update);
+
+    // Check Query Run Or Not
+    if ($navbar_query) {
+        $_SESSION['success'] = 'On Navbar Updated Successfully';
+        header('location: category.php');
+        exit();
+    } else {
+        echo 'Something Went Wrong';
+    }
+}
