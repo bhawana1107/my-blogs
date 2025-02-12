@@ -58,7 +58,7 @@ $category_sqli = mysqli_fetch_all($category_sql, MYSQLI_ASSOC);
     <div class="container">
         <div class="d-flex align-items-center justify-content-between bg-light py-2 px-4 mb-3">
             <h3 class="m-0">Featured</h3>
-            <a class="text-secondary font-weight-medium text-decoration-none" href="">View All</a>
+            <a class="text-secondary font-weight-medium text-decoration-none" href="all_categories.php">View All</a>
         </div>
         <div class="owl-carousel owl-carousel-2 carousel-item-4 position-relative">
             <?php foreach (blogsData($con) as $key => $result) {   ?>
@@ -66,11 +66,11 @@ $category_sqli = mysqli_fetch_all($category_sql, MYSQLI_ASSOC);
                     <img class="img-fluid w-100 h-100" src="./admin/<?= htmlspecialchars($result['blog_image']) ?>" style="object-fit: cover;">
                     <div class="overlay">
                         <div class="mb-1" style="font-size: 13px;">
-                            <a class="text-white" href=""><?= $result['category_name'] ?></a>
+                            <a class="text-white" href="single.php?id=<?= $result['id'] ?>"><?= $result['category_name'] ?></a>
                             <span class="px-1 text-white">/</span>
                             <a class="text-white" href=""><?= $result['created_on'] ?></a>
                         </div>
-                        <a class="h6 m-0 text-white font-weight-bold" href=""><?= substr(strip_tags(html_entity_decode($result['blog_content'])), 0, 100) ?></a>
+                        <a class="h6 m-0 text-white font-weight-bold" href="single.php?id=<?= $result['id'] ?>"><?= substr(strip_tags(html_entity_decode($result['blog_content'])), 0, 100) ?></a>
                     </div>
                 </div>
             <?php } ?>
@@ -102,11 +102,11 @@ $category_sqli = mysqli_fetch_all($category_sql, MYSQLI_ASSOC);
                                 <img class="img-fluid w-100" src="./admin/<?= htmlspecialchars($result['blog_image']) ?>" style="object-fit: cover;">
                                 <div class="overlay position-relative bg-light">
                                     <div class="mb-2" style="font-size: 13px;">
-                                        <a href=""><?= $result['blog_name'] ?></a>
+                                        <a href="single.php?id=<?= $result['id'] ?>"><?= $result['blog_name'] ?></a>
                                         <span class="px-1">/</span>
                                         <span><?= $result['created_on'] ?></span>
                                     </div>
-                                    <a class="h6 m-0 " href=""><?= substr(strip_tags(html_entity_decode($result['blog_content'])), 0, 100) ?></a>
+                                    <a class="h6 m-0 " href="single.php?id=<?= $result['id'] ?>"><?= substr(strip_tags(html_entity_decode($result['blog_content'])), 0, 100) ?></a>
                                 </div>
                             </div>
                         <?php } ?>
@@ -223,166 +223,62 @@ $category_sqli = mysqli_fetch_all($category_sql, MYSQLI_ASSOC);
                     <div class="col-12">
                         <div class="d-flex align-items-center justify-content-between bg-light py-2 px-4 mb-3">
                             <h3 class="m-0">Popular</h3>
-                            <a class="text-secondary font-weight-medium text-decoration-none" href="">View All</a>
+                            <!-- <a class="text-secondary font-weight-medium text-decoration-none" href="">View All</a> -->
                         </div>
                     </div>
-                    <div class="col-lg-6">
-                        <div class="position-relative mb-3">
-                            <img class="img-fluid w-100" src="img/news-500x280-2.jpg" style="object-fit: cover;">
-                            <div class="overlay position-relative bg-light">
-                                <div class="mb-2" style="font-size: 14px;">
-                                    <a href="">Technology</a>
-                                    <span class="px-1">/</span>
-                                    <span>January 01, 2045</span>
+                    <?php
+                    foreach (blogs($con) as $key => $resultview) {
+                    ?>
+
+                        <div class="col-lg-6">
+                            <div class="position-relative mb-3">
+                                <img class="img-fluid w-100" src="./admin/<?= htmlspecialchars($resultview['blog_image']) ?>" style="object-fit: cover;">
+                                <div class="overlay position-relative bg-light">
+                                    <div class="mb-2" style="font-size: 14px;">
+                                        <a href="single.php?id=<?= $resultview['id'] ?>"><?= $resultview['blog_name'] ?></a>
+                                        <span class="px-1">/</span>
+                                        <span><?= $resultview['created_on'] ?></span>
+                                    </div>
+                                    <a class="h4" href="single.php?id=<?= $resultview['id'] ?>"><?= substr(strip_tags(html_entity_decode($resultview['blog_content'])), 0, 50) ?>...</a>
+
                                 </div>
-                                <a class="h4" href="">Est stet amet ipsum stet clita rebum duo</a>
-                                <p class="m-0">Rebum dolore duo et vero ipsum clita, est ea sed duo diam ipsum, clita at justo, lorem amet vero eos sed sit...</p>
                             </div>
+
                         </div>
-                        <div class="d-flex mb-3">
-                            <img src="img/news-100x100-1.jpg" style="width: 100px; height: 100px; object-fit: cover;">
-                            <div class="w-100 d-flex flex-column justify-content-center bg-light px-3" style="height: 100px;">
-                                <div class="mb-1" style="font-size: 13px;">
-                                    <a href="">Technology</a>
-                                    <span class="px-1">/</span>
-                                    <span>January 01, 2045</span>
-                                </div>
-                                <a class="h6 m-0" href="">Lorem ipsum dolor sit amet consec adipis elit</a>
-                            </div>
-                        </div>
-                        <div class="d-flex mb-3">
-                            <img src="img/news-100x100-2.jpg" style="width: 100px; height: 100px; object-fit: cover;">
-                            <div class="w-100 d-flex flex-column justify-content-center bg-light px-3" style="height: 100px;">
-                                <div class="mb-1" style="font-size: 13px;">
-                                    <a href="">Technology</a>
-                                    <span class="px-1">/</span>
-                                    <span>January 01, 2045</span>
-                                </div>
-                                <a class="h6 m-0" href="">Lorem ipsum dolor sit amet consec adipis elit</a>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-lg-6">
-                        <div class="position-relative mb-3">
-                            <img class="img-fluid w-100" src="img/news-500x280-3.jpg" style="object-fit: cover;">
-                            <div class="overlay position-relative bg-light">
-                                <div class="mb-2" style="font-size: 14px;">
-                                    <a href="">Technology</a>
-                                    <span class="px-1">/</span>
-                                    <span>January 01, 2045</span>
-                                </div>
-                                <a class="h4" href="">Est stet amet ipsum stet clita rebum duo</a>
-                                <p class="m-0">Rebum dolore duo et vero ipsum clita, est ea sed duo diam ipsum, clita at justo, lorem amet vero eos sed sit...</p>
-                            </div>
-                        </div>
-                        <div class="d-flex mb-3">
-                            <img src="img/news-100x100-3.jpg" style="width: 100px; height: 100px; object-fit: cover;">
-                            <div class="w-100 d-flex flex-column justify-content-center bg-light px-3" style="height: 100px;">
-                                <div class="mb-1" style="font-size: 13px;">
-                                    <a href="">Technology</a>
-                                    <span class="px-1">/</span>
-                                    <span>January 01, 2045</span>
-                                </div>
-                                <a class="h6 m-0" href="">Lorem ipsum dolor sit amet consec adipis elit</a>
-                            </div>
-                        </div>
-                        <div class="d-flex mb-3">
-                            <img src="img/news-100x100-4.jpg" style="width: 100px; height: 100px; object-fit: cover;">
-                            <div class="w-100 d-flex flex-column justify-content-center bg-light px-3" style="height: 100px;">
-                                <div class="mb-1" style="font-size: 13px;">
-                                    <a href="">Technology</a>
-                                    <span class="px-1">/</span>
-                                    <span>January 01, 2045</span>
-                                </div>
-                                <a class="h6 m-0" href="">Lorem ipsum dolor sit amet consec adipis elit</a>
-                            </div>
-                        </div>
-                    </div>
+                    <?php } ?>
+
                 </div>
 
-                <div class="mb-3 pb-3">
-                    <a href=""><img class="img-fluid w-100" src="img/ads-700x70.jpg" alt=""></a>
-                </div>
+
 
                 <div class="row">
                     <div class="col-12">
                         <div class="d-flex align-items-center justify-content-between bg-light py-2 px-4 mb-3">
                             <h3 class="m-0">Latest</h3>
-                            <a class="text-secondary font-weight-medium text-decoration-none" href="">View All</a>
+                            <!-- <a class="text-secondary font-weight-medium text-decoration-none" href="">View All</a> -->
                         </div>
                     </div>
-                    <div class="col-lg-6">
-                        <div class="position-relative mb-3">
-                            <img class="img-fluid w-100" src="img/news-500x280-5.jpg" style="object-fit: cover;">
-                            <div class="overlay position-relative bg-light">
-                                <div class="mb-2" style="font-size: 14px;">
-                                    <a href="">Technology</a>
-                                    <span class="px-1">/</span>
-                                    <span>January 01, 2045</span>
+                    <?php
+                    foreach (blogs($con) as $key => $resultview) {
+                    ?>
+
+                        <div class="col-lg-6">
+                            <div class="position-relative mb-3">
+                                <img class="img-fluid w-100" src="./admin/<?= htmlspecialchars($resultview['blog_image']) ?>" style="object-fit: cover;">
+                                <div class="overlay position-relative bg-light">
+                                    <div class="mb-2" style="font-size: 14px;">
+                                        <a href="single.php?id=<?= $resultview['id'] ?>"><?= $resultview['blog_name'] ?></a>
+                                        <span class="px-1">/</span>
+                                        <span><?= $resultview['created_on'] ?></span>
+                                    </div>
+                                    <a class="h4" href="single.php?id=<?= $resultview['id'] ?>"><?= substr(strip_tags(html_entity_decode($resultview['blog_content'])), 0, 50) ?>...</a>
+
                                 </div>
-                                <a class="h4" href="">Est stet amet ipsum stet clita rebum duo</a>
-                                <p class="m-0">Rebum dolore duo et vero ipsum clita, est ea sed duo diam ipsum, clita at justo, lorem amet vero eos sed sit...</p>
                             </div>
+
                         </div>
-                        <div class="d-flex mb-3">
-                            <img src="img/news-100x100-5.jpg" style="width: 100px; height: 100px; object-fit: cover;">
-                            <div class="w-100 d-flex flex-column justify-content-center bg-light px-3" style="height: 100px;">
-                                <div class="mb-1" style="font-size: 13px;">
-                                    <a href="">Technology</a>
-                                    <span class="px-1">/</span>
-                                    <span>January 01, 2045</span>
-                                </div>
-                                <a class="h6 m-0" href="">Lorem ipsum dolor sit amet consec adipis elit</a>
-                            </div>
-                        </div>
-                        <div class="d-flex mb-3">
-                            <img src="img/news-100x100-1.jpg" style="width: 100px; height: 100px; object-fit: cover;">
-                            <div class="w-100 d-flex flex-column justify-content-center bg-light px-3" style="height: 100px;">
-                                <div class="mb-1" style="font-size: 13px;">
-                                    <a href="">Technology</a>
-                                    <span class="px-1">/</span>
-                                    <span>January 01, 2045</span>
-                                </div>
-                                <a class="h6 m-0" href="">Lorem ipsum dolor sit amet consec adipis elit</a>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-lg-6">
-                        <div class="position-relative mb-3">
-                            <img class="img-fluid w-100" src="img/news-500x280-6.jpg" style="object-fit: cover;">
-                            <div class="overlay position-relative bg-light">
-                                <div class="mb-2" style="font-size: 14px;">
-                                    <a href="">Technology</a>
-                                    <span class="px-1">/</span>
-                                    <span>January 01, 2045</span>
-                                </div>
-                                <a class="h4" href="">Est stet amet ipsum stet clita rebum duo</a>
-                                <p class="m-0">Rebum dolore duo et vero ipsum clita, est ea sed duo diam ipsum, clita at justo, lorem amet vero eos sed sit...</p>
-                            </div>
-                        </div>
-                        <div class="d-flex mb-3">
-                            <img src="img/news-100x100-2.jpg" style="width: 100px; height: 100px; object-fit: cover;">
-                            <div class="w-100 d-flex flex-column justify-content-center bg-light px-3" style="height: 100px;">
-                                <div class="mb-1" style="font-size: 13px;">
-                                    <a href="">Technology</a>
-                                    <span class="px-1">/</span>
-                                    <span>January 01, 2045</span>
-                                </div>
-                                <a class="h6 m-0" href="">Lorem ipsum dolor sit amet consec adipis elit</a>
-                            </div>
-                        </div>
-                        <div class="d-flex mb-3">
-                            <img src="img/news-100x100-3.jpg" style="width: 100px; height: 100px; object-fit: cover;">
-                            <div class="w-100 d-flex flex-column justify-content-center bg-light px-3" style="height: 100px;">
-                                <div class="mb-1" style="font-size: 13px;">
-                                    <a href="">Technology</a>
-                                    <span class="px-1">/</span>
-                                    <span>January 01, 2045</span>
-                                </div>
-                                <a class="h6 m-0" href="">Lorem ipsum dolor sit amet consec adipis elit</a>
-                            </div>
-                        </div>
-                    </div>
+                    <?php } ?>
+
                 </div>
             </div>
 
@@ -443,68 +339,7 @@ $category_sqli = mysqli_fetch_all($category_sql, MYSQLI_ASSOC);
                 </div>
                 <!-- Ads End -->
 
-                <!-- Popular News Start -->
-                <div class="pb-3">
-                    <div class="bg-light py-2 px-4 mb-3">
-                        <h3 class="m-0">Tranding</h3>
-                    </div>
-                    <div class="d-flex mb-3">
-                        <img src="img/news-100x100-1.jpg" style="width: 100px; height: 100px; object-fit: cover;">
-                        <div class="w-100 d-flex flex-column justify-content-center bg-light px-3" style="height: 100px;">
-                            <div class="mb-1" style="font-size: 13px;">
-                                <a href="">Technology</a>
-                                <span class="px-1">/</span>
-                                <span>January 01, 2045</span>
-                            </div>
-                            <a class="h6 m-0" href="">Lorem ipsum dolor sit amet consec adipis elit</a>
-                        </div>
-                    </div>
-                    <div class="d-flex mb-3">
-                        <img src="img/news-100x100-2.jpg" style="width: 100px; height: 100px; object-fit: cover;">
-                        <div class="w-100 d-flex flex-column justify-content-center bg-light px-3" style="height: 100px;">
-                            <div class="mb-1" style="font-size: 13px;">
-                                <a href="">Technology</a>
-                                <span class="px-1">/</span>
-                                <span>January 01, 2045</span>
-                            </div>
-                            <a class="h6 m-0" href="">Lorem ipsum dolor sit amet consec adipis elit</a>
-                        </div>
-                    </div>
-                    <div class="d-flex mb-3">
-                        <img src="img/news-100x100-3.jpg" style="width: 100px; height: 100px; object-fit: cover;">
-                        <div class="w-100 d-flex flex-column justify-content-center bg-light px-3" style="height: 100px;">
-                            <div class="mb-1" style="font-size: 13px;">
-                                <a href="">Technology</a>
-                                <span class="px-1">/</span>
-                                <span>January 01, 2045</span>
-                            </div>
-                            <a class="h6 m-0" href="">Lorem ipsum dolor sit amet consec adipis elit</a>
-                        </div>
-                    </div>
-                    <div class="d-flex mb-3">
-                        <img src="img/news-100x100-4.jpg" style="width: 100px; height: 100px; object-fit: cover;">
-                        <div class="w-100 d-flex flex-column justify-content-center bg-light px-3" style="height: 100px;">
-                            <div class="mb-1" style="font-size: 13px;">
-                                <a href="">Technology</a>
-                                <span class="px-1">/</span>
-                                <span>January 01, 2045</span>
-                            </div>
-                            <a class="h6 m-0" href="">Lorem ipsum dolor sit amet consec adipis elit</a>
-                        </div>
-                    </div>
-                    <div class="d-flex mb-3">
-                        <img src="img/news-100x100-5.jpg" style="width: 100px; height: 100px; object-fit: cover;">
-                        <div class="w-100 d-flex flex-column justify-content-center bg-light px-3" style="height: 100px;">
-                            <div class="mb-1" style="font-size: 13px;">
-                                <a href="">Technology</a>
-                                <span class="px-1">/</span>
-                                <span>January 01, 2045</span>
-                            </div>
-                            <a class="h6 m-0" href="">Lorem ipsum dolor sit amet consec adipis elit</a>
-                        </div>
-                    </div>
-                </div>
-                <!-- Popular News End -->
+
 
                 <!-- Tags Start -->
                 <div class="pb-3">

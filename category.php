@@ -8,11 +8,29 @@ if (isset($_GET['id'])) {
     $blogs = "SELECT * FROM `blogs` WHERE category_id = '$id' ";
     $blogs_sql = mysqli_query($con, $blogs);
     $blogs_query = mysqli_fetch_all($blogs_sql, MYSQLI_ASSOC);
+                        
+                            // Increase the view count
+                            $update_view_query = "UPDATE blogs SET view = view + 1 WHERE category_id = $id";
+                            $update_sql = mysqli_query($con, $update_view_query);
+                          
+                            // Fetch the blog details
+                            $query = "SELECT * FROM blogs WHERE category_id = $id";
+                            $blog_sql = mysqli_query($con, $query);
+                          
+        if (mysqli_num_rows($blog_sql)>0) {
+            $blog_res = mysqli_fetch_all($blog_sql, MYSQLI_ASSOC);
+        } else {
+            echo "Blog not found.";
+            exit;
+        }
 } else {
     header('location: index.php');
     die();
 }
-?>
+   
+   
+   ?>
+
 
 
 
@@ -25,6 +43,9 @@ if (isset($_GET['id'])) {
                     <div class="col-12">
                         <div class="d-flex align-items-center justify-content-between bg-light py-2 px-4 mb-3">
                             <h3 class="m-0"><?= $category_query['category_name'] ?></h3>
+                            <?php if (count($blogs_query) > 1) { ?>
+                                <a class="text-secondary font-weight-medium text-decoration-none" href="all_categories.php">View All</a>
+                            <?php } ?>
                         </div>
                     </div>
                     <?php foreach ($blogs_query as $key => $result) { ?>
@@ -33,11 +54,11 @@ if (isset($_GET['id'])) {
                                 <img class="img-fluid w-100" src="./admin/<?= htmlspecialchars($result['blog_image']) ?>" style="object-fit: cover;">
                                 <div class="overlay position-relative bg-light">
                                     <div class="mb-2" style="font-size: 14px;">
-                                        <a href=""><?= $result['blog_name'] ?></a>
+                                        <a href="single.php?id=<?= $result['id'] ?>"><?= $result['blog_name'] ?></a>
                                         <span class="px-1">/</span>
                                         <span><?= $result['created_on'] ?></span>
                                     </div>
-                                    <a class="h4" href=""><?= substr(strip_tags(html_entity_decode($result['blog_content'])), 0, 55) ?></a>
+                                    <a class="h4" href="single.php?id=<?= $result['id'] ?>"><?= substr(strip_tags(html_entity_decode($result['blog_content'])), 0, 55) ?></a>
                                     <p class="m-0"><?= substr(strip_tags(html_entity_decode($result['blog_content'])), 55, 100) ?>...</p>
                                 </div>
                             </div>

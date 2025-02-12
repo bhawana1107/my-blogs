@@ -23,7 +23,7 @@ function NavbarCategory($con,$OnNavbar,$limit)
     return $category_query;
 }
 
-// Category all active data 
+// Category which have category status is 1
 function categoryData($con)
 {
     $category = "SELECT * FROM category WHERE category_status = 1";
@@ -36,6 +36,15 @@ function categoryData($con)
 function blogsData($con)
 {
     $blogs = "SELECT blogs.*, category.category_name FROM `blogs` LEFT JOIN category ON category.id=blogs.category_id";
+    $blogs_sql = mysqli_query($con, $blogs);
+    $blogs_query = mysqli_fetch_all($blogs_sql, MYSQLI_ASSOC);
+    return $blogs_query;
+}
+
+function blogs($con)
+{
+    $blogs = "SELECT blogs.*, category.category_name FROM `blogs` LEFT JOIN category ON category.id=blogs.category_id ORDER BY view DESC LIMIT 2";
+
     $blogs_sql = mysqli_query($con, $blogs);
     $blogs_query = mysqli_fetch_all($blogs_sql, MYSQLI_ASSOC);
     return $blogs_query;
