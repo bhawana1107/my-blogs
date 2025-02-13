@@ -3,7 +3,8 @@ require_once './includes/header.php';
 
 if (isset($_POST['update'])) {
     $new_name = mysqli_real_escape_string($con, trim($_POST['user_name']));
-    $update_name = "UPDATE `users` SET user_name = '$new_name' WHERE id = '" . $_SESSION['user_id'] . "' ";
+    $new_password = mysqli_real_escape_string($con, trim($_POST['password']));
+    $update_name = "UPDATE `users` SET user_name = '$new_name' AND password = '$new_password' WHERE id = '" . $_SESSION['user_id'] . "' ";
     $update_query = mysqli_query($con, $update_name);
     if ($update_query) {
         header('location: index.php');
@@ -37,6 +38,14 @@ if (isset($_POST['update'])) {
                             <div class="form-group">
                                 <label for="name">Update Your Name</label>
                                 <input type="text" class="form-control" id="name" name="user_name" value="<?= $_SESSION['user_name'] ?>" autofocus>
+                            </div>
+                            <div class="form-group">
+                                <label for="name">Your Email</label>
+                                <input type="text" class="form-control" id="name" name="user_email" value="<?= $_SESSION['user_email'] ?>" autofocus>
+                            </div>
+                            <div class="form-group">
+                                <label for="name">Update Your Password</label>
+                                <input type="text" class="form-control" id="name" name="password" value="<?= $_SESSION['password'] ?>" autofocus>
                             </div>
                         </div>
                         <div class="card-footer">

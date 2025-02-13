@@ -39,10 +39,10 @@ $category_sqli = mysqli_fetch_all($category_sql, MYSQLI_ASSOC);
                     <h3 class="m-0">Categories</h3>
                     <a class="text-secondary font-weight-medium text-decoration-none" href="all_categories.php">View All</a>
                 </div>
-                <?php foreach (categoryData($con) as $key => $result) {   ?>
+                <?php foreach (blogsData($con) as $key => $result) {   ?>
                     <div class="position-relative overflow-hidden mb-3" style="height: 80px;">
-                        <img class="img-fluid w-100 h-100" src="img/cat-500x80-1.jpg" style="object-fit: cover;">
-                        <a href="" class="overlay align-items-center justify-content-center h4 m-0 text-white text-decoration-none">
+                        <img class="img-fluid w-100 h-100" src="./admin/<?= htmlspecialchars($result['blog_image']) ?>" style="object-fit: cover;">
+                        <a href="single.php?id=<?= $result['id'] ?>" class="overlay align-items-center justify-content-center h4 m-0 text-white text-decoration-none">
                             <?= $result['category_name'] ?>
                         </a>
                     </div>

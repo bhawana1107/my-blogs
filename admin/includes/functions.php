@@ -15,7 +15,7 @@ function prx($array)
 }
 
 // category to show on navbar
-function NavbarCategory($con,$OnNavbar,$limit)
+function NavbarCategory($con, $OnNavbar, $limit)
 {
     $category = "SELECT * FROM `category` WHERE on_navbar = $OnNavbar LIMIT $limit";
     $category_sql = mysqli_query($con, $category);
