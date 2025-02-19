@@ -54,10 +54,11 @@ ob_start();
             <div class="collapse navbar-collapse justify-content-between px-0 px-lg-3" id="navbarCollapse">
                 <div class="navbar-nav mr-auto py-0">
                     <a href="index.php" class="nav-item nav-link active">Home</a>
+                    <!-- SHOW ACTIVE CATEGORY MAXIMUM 5 ON NAVBAR -->
                     <?php foreach (NavbarCategory($con, 1, 5) as $key => $result) {   ?>
                         <a href="category.php?id=<?= $result['id'] ?>" class="nav-item nav-link"><?= $result['category_name'] ?></a>
                     <?php } ?>
-                    <a href="contact." class="nav-item nav-link">Contact Us</a>
+                    <a href="contact.php" class="nav-item nav-link">Contact Us</a>
                 </div>
                 <div class="input-group ml-auto" style="width: 100%; max-width: 300px;">
                     <input type="text" class="form-control" placeholder="Keyword">
@@ -70,5 +71,3 @@ ob_start();
         </nav>
     </div>
     <!-- Navbar End -->
-
-   

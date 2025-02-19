@@ -1,7 +1,9 @@
 <?php
 include('./includes/header.php');
 
-$category = "SELECT category.category_name, COUNT(blogs.category_id) AS NumberOfCategory, MIN(category.id) as cat_id 
+// POPULAR BLOGS
+$category = "SELECT category.category_name, COUNT(blogs.category_id) AS
+ NumberOfCategory, MIN(category.id) as cat_id 
 FROM blogs LEFT JOIN category ON blogs.category_id = category.id
 GROUP BY category_id ORDER BY COUNT(blogs.category_id) DESC LIMIT 4";
 $category_sql = mysqli_query($con, $category);
@@ -14,7 +16,8 @@ $category_sqli = mysqli_fetch_all($category_sql, MYSQLI_ASSOC);
         <div class="row">
             <div class="col-lg-8">
                 <div class="owl-carousel owl-carousel-2 carousel-item-1 position-relative mb-3 mb-lg-0">
-                    <?php foreach (blogsData($con) as $key => $result) {
+                    <!-- THREE LATEST BLOGS ADDS -->
+                    <?php foreach (latest($con, 3) as $key => $result) {
                     ?>
                         <div class="position-relative overflow-hidden" style="height: 435px;">
                             <img class="img-fluid h-100" src="./admin/<?= htmlspecialchars($result['blog_image']) ?>" style="object-fit: cover;">
@@ -25,8 +28,8 @@ $category_sqli = mysqli_fetch_all($category_sql, MYSQLI_ASSOC);
                                     <a class="text-white"><?= $result['created_on'] ?></a>
                                 </div>
                                 <a class="h6 m-0 text-white font-weight-bold"
-                                    href="single.php?id=<?= $result['id'] ?>">
-                                    <?= substr(strip_tags(html_entity_decode($result['blog_content'])), 0, 100) ?></a>
+                                    href="category.php?id=<?= $result['category_id'] ?>">
+                                    <?= $result['blog_name'] ?></a>
                             </div>
                         </div>
 
@@ -34,19 +37,37 @@ $category_sqli = mysqli_fetch_all($category_sql, MYSQLI_ASSOC);
 
                 </div>
             </div>
-            <div class="col-lg-4" style="overflow-y:scroll;height:430px;">
+            <div class="col-lg-4" style="overflow:auto;height:450px;">
                 <div class="d-flex align-items-center justify-content-between bg-light py-2 px-4 mb-3">
                     <h3 class="m-0">Categories</h3>
-                    <a class="text-secondary font-weight-medium text-decoration-none" href="all_categories.php">View All</a>
+                    <a class="text-secondary font-weight-medium text-decoration-none" href="?category=all">View All</a>
                 </div>
-                <?php foreach (blogsData($con) as $key => $result) {   ?>
-                    <div class="position-relative overflow-hidden mb-3" style="height: 80px;">
-                        <img class="img-fluid w-100 h-100" src="./admin/<?= htmlspecialchars($result['blog_image']) ?>" style="object-fit: cover;">
-                        <a href="single.php?id=<?= $result['id'] ?>" class="overlay align-items-center justify-content-center h4 m-0 text-white text-decoration-none">
-                            <?= $result['category_name'] ?>
-                        </a>
-                    </div>
-                <?php } ?>
+                <?php
+                // CATEGORY WHICH ARE ACTIVE
+                if (isset($_GET['category'])) {
+                    foreach (categoryData($con) as $key => $result) {   ?>
+                        <div class="position-relative overflow-hidden mb-3" style="height: 80px;">
+                            <img class="img-fluid w-100 h-100" src="https://www.shutterstock.com/image-photo/category-word-scattered-english-alpabets-260nw-1594857565.jpg" style="object-fit: cover;">
+                            <a href="category.php?id=<?= $result['id'] ?>" class="overlay align-items-center justify-content-center h4 m-0 text-white text-decoration-none">
+                                <?= $result['category_name'] ?>
+                            </a>
+                        </div>
+                    <?php }
+                } else {
+
+                    foreach (categoryData($con, 4) as $key => $result) {
+
+                    ?>
+                        <div class="position-relative overflow-hidden mb-3" style="height: 80px;">
+
+                            <img class="img-fluid w-100 h-100" src="https://www.shutterstock.com/image-photo/category-word-scattered-english-alpabets-260nw-1594857565.jpg" style="object-fit: cover;">
+
+                            <a href="category.php?id=<?= $result['id'] ?>" class="overlay align-items-center justify-content-center h4 m-0 text-white text-decoration-none">
+                                <?= $result['category_name'] ?>
+                            </a>
+                        </div>
+                <?php }
+                } ?>
             </div>
         </div>
     </div>
@@ -61,7 +82,7 @@ $category_sqli = mysqli_fetch_all($category_sql, MYSQLI_ASSOC);
             <a class="text-secondary font-weight-medium text-decoration-none" href="all_categories.php">View All</a>
         </div>
         <div class="owl-carousel owl-carousel-2 carousel-item-4 position-relative">
-            <?php foreach (blogsData($con) as $key => $result) {   ?>
+            <?php foreach (blogsData($con, 5) as $key => $result) {   ?>
                 <div class="position-relative overflow-hidden" style="height: 300px;">
                     <img class="img-fluid w-100 h-100" src="./admin/<?= htmlspecialchars($result['blog_image']) ?>" style="object-fit: cover;">
                     <div class="overlay">
@@ -77,17 +98,16 @@ $category_sqli = mysqli_fetch_all($category_sql, MYSQLI_ASSOC);
         </div>
     </div>
 </div>
-</div>
 <!-- Featured News Slider End -->
 
 <!-- Category News Slider Start -->
 <div class="container-fluid">
     <div class="container">
-
         <div class="row">
             <?php foreach ($category_sqli as $key => $category_res) {
                 $cat_id = $category_res['cat_id'];
-                $blogs = "SELECT * FROM `blogs` WHERE category_id = $cat_id ORDER BY id DESC";
+
+                $blogs = "SELECT blogs.*, category.category_name FROM `blogs` LEFT JOIN category ON category.id=blogs.category_id WHERE category_id = $cat_id ORDER BY id DESC";
                 $blogs_sql = mysqli_query($con, $blogs);
                 $blogs_sqli = mysqli_fetch_all($blogs_sql, MYSQLI_ASSOC);
             ?>
@@ -96,22 +116,46 @@ $category_sqli = mysqli_fetch_all($category_sql, MYSQLI_ASSOC);
                     <div class="bg-light py-2 px-4 mb-3">
                         <h3 class="m-0"><?= $category_res['category_name'] ?></h3>
                     </div>
-                    <div class="owl-carousel owl-carousel-3 carousel-item-2 position-relative">
-                        <?php foreach ($blogs_sqli as $key => $result) {   ?>
+                    <?php
+                    if (count($blogs_sqli) > 1) { ?>
+                        <div class="owl-carousel owl-carousel-3 carousel-item-2 position-relative">
+
+                            <?php
+                            foreach ($blogs_sqli as $key => $result) {
+                            ?>
+                                <div class="position-relative">
+                                    <img class="img-fluid w-100" src="./admin/<?= htmlspecialchars($result['blog_image']) ?>" style="object-fit: cover;height:250px;">
+                                    <div class="overlay position-relative bg-light">
+                                        <div class="mb-2" style="font-size: 13px;">
+                                            <a><?= $result['category_name'] ?></a>
+                                            <span class="px-1">/</span>
+                                            <span><?= $result['created_on'] ?></span>
+                                        </div>
+                                        <a class="h5 m-0 " href="category.php?id=<?= $result['id'] ?>"><?= $result['blog_name'] ?></a>
+                                    </div>
+                                </div>
+                            <?php } ?>
+
+                        </div>
+                    <?php } else { ?>
+                        <?php
+                        foreach ($blogs_sqli as $key => $result) {
+                        ?>
                             <div class="position-relative">
-                                <img class="img-fluid w-100" src="./admin/<?= htmlspecialchars($result['blog_image']) ?>" style="object-fit: cover;">
+                                <img class="img-fluid w-100" src="./admin/<?= htmlspecialchars($result['blog_image']) ?>" style="object-fit: cover;height:250px;">
                                 <div class="overlay position-relative bg-light">
                                     <div class="mb-2" style="font-size: 13px;">
-                                        <a href="single.php?id=<?= $result['id'] ?>"><?= $result['blog_name'] ?></a>
+                                        <a><?= $result['category_name'] ?></a>
                                         <span class="px-1">/</span>
                                         <span><?= $result['created_on'] ?></span>
                                     </div>
-                                    <a class="h6 m-0 " href="single.php?id=<?= $result['id'] ?>"><?= substr(strip_tags(html_entity_decode($result['blog_content'])), 0, 100) ?></a>
+                                    <a class="h5 m-0 " href="category.php?id=<?= $result['id'] ?>"><?= $result['blog_name'] ?></a>
                                 </div>
                             </div>
                         <?php } ?>
 
-                    </div>
+                    <?php
+                    } ?>
                 </div>
             <?php
             } ?>
@@ -119,100 +163,7 @@ $category_sqli = mysqli_fetch_all($category_sql, MYSQLI_ASSOC);
 
     </div>
 </div>
-</div>
 <!-- Category News Slider End -->
-
-
-<!-- Category News Slider Start -->
-<!-- <div class="container-fluid">
-    <div class="container">
-        <div class="row">
-            <div class="col-lg-6 py-3">
-                <div class="bg-light py-2 px-4 mb-3">
-                    <h3 class="m-0">Entertainment</h3>
-                </div>
-                <div class="owl-carousel owl-carousel-3 carousel-item-2 position-relative">
-                    <div class="position-relative">
-                        <img class="img-fluid w-100" src="img/news-500x280-6.jpg" style="object-fit: cover;">
-                        <div class="overlay position-relative bg-light">
-                            <div class="mb-2" style="font-size: 13px;">
-                                <a href="">Technology</a>
-                                <span class="px-1">/</span>
-                                <span>January 01, 2045</span>
-                            </div>
-                            <a class="h4 m-0" href="">Sanctus amet sed ipsum lorem</a>
-                        </div>
-                    </div>
-                    <div class="position-relative">
-                        <img class="img-fluid w-100" src="img/news-500x280-5.jpg" style="object-fit: cover;">
-                        <div class="overlay position-relative bg-light">
-                            <div class="mb-2" style="font-size: 13px;">
-                                <a href="">Technology</a>
-                                <span class="px-1">/</span>
-                                <span>January 01, 2045</span>
-                            </div>
-                            <a class="h4 m-0" href="">Sanctus amet sed ipsum lorem</a>
-                        </div>
-                    </div>
-                    <div class="position-relative">
-                        <img class="img-fluid w-100" src="img/news-500x280-4.jpg" style="object-fit: cover;">
-                        <div class="overlay position-relative bg-light">
-                            <div class="mb-2" style="font-size: 13px;">
-                                <a href="">Technology</a>
-                                <span class="px-1">/</span>
-                                <span>January 01, 2045</span>
-                            </div>
-                            <a class="h4 m-0" href="">Sanctus amet sed ipsum lorem</a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-lg-6 py-3">
-                <div class="bg-light py-2 px-4 mb-3">
-                    <h3 class="m-0">Sports</h3>
-                </div>
-                <div class="owl-carousel owl-carousel-3 carousel-item-2 position-relative">
-                    <div class="position-relative">
-                        <img class="img-fluid w-100" src="img/news-500x280-3.jpg" style="object-fit: cover;">
-                        <div class="overlay position-relative bg-light">
-                            <div class="mb-2" style="font-size: 13px;">
-                                <a href="">Technology</a>
-                                <span class="px-1">/</span>
-                                <span>January 01, 2045</span>
-                            </div>
-                            <a class="h4 m-0" href="">Sanctus amet sed ipsum lorem</a>
-                        </div>
-                    </div>
-                    <div class="position-relative">
-                        <img class="img-fluid w-100" src="img/news-500x280-2.jpg" style="object-fit: cover;">
-                        <div class="overlay position-relative bg-light">
-                            <div class="mb-2" style="font-size: 13px;">
-                                <a href="">Technology</a>
-                                <span class="px-1">/</span>
-                                <span>January 01, 2045</span>
-                            </div>
-                            <a class="h4 m-0" href="">Sanctus amet sed ipsum lorem</a>
-                        </div>
-                    </div>
-                    <div class="position-relative">
-                        <img class="img-fluid w-100" src="img/news-500x280-1.jpg" style="object-fit: cover;">
-                        <div class="overlay position-relative bg-light">
-                            <div class="mb-2" style="font-size: 13px;">
-                                <a href="">Technology</a>
-                                <span class="px-1">/</span>
-                                <span>January 01, 2045</span>
-                            </div>
-                            <a class="h4 m-0" href="">Sanctus amet sed ipsum lorem</a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</div> -->
-</div>
-<!-- Category News Slider End -->
-
 
 <!-- News With Sidebar Start -->
 <div class="container-fluid py-3">
@@ -227,19 +178,18 @@ $category_sqli = mysqli_fetch_all($category_sql, MYSQLI_ASSOC);
                         </div>
                     </div>
                     <?php
-                    foreach (blogs($con) as $key => $resultview) {
+                    foreach (blogs($con, 4) as $key => $resultview) {
                     ?>
-
                         <div class="col-lg-6">
                             <div class="position-relative mb-3">
-                                <img class="img-fluid w-100" src="./admin/<?= htmlspecialchars($resultview['blog_image']) ?>" style="object-fit: cover;">
+                                <img class="img-fluid w-100" src="./admin/<?= htmlspecialchars($resultview['blog_image']) ?>" style="object-fit: cover;height:250px;">
                                 <div class="overlay position-relative bg-light">
                                     <div class="mb-2" style="font-size: 14px;">
-                                        <a href="single.php?id=<?= $resultview['id'] ?>"><?= $resultview['blog_name'] ?></a>
+                                        <a><?= $resultview['category_name'] ?></a>
                                         <span class="px-1">/</span>
                                         <span><?= $resultview['created_on'] ?></span>
                                     </div>
-                                    <a class="h4" href="single.php?id=<?= $resultview['id'] ?>"><?= substr(strip_tags(html_entity_decode($resultview['blog_content'])), 0, 50) ?>...</a>
+                                    <a class="h4" href="category.php?id=<?= $resultview['category_id'] ?>"><?= $resultview['blog_name'] ?>...</a>
 
                                 </div>
                             </div>
@@ -259,19 +209,19 @@ $category_sqli = mysqli_fetch_all($category_sql, MYSQLI_ASSOC);
                         </div>
                     </div>
                     <?php
-                    foreach (blogs($con) as $key => $resultview) {
+                    foreach (blogsLatest($con) as $key => $resultview) {
                     ?>
 
                         <div class="col-lg-6">
                             <div class="position-relative mb-3">
-                                <img class="img-fluid w-100" src="./admin/<?= htmlspecialchars($resultview['blog_image']) ?>" style="object-fit: cover;">
+                                <img class="img-fluid w-100" src="./admin/<?= htmlspecialchars($resultview['blog_image']) ?>" style="object-fit: cover;height:250px;">
                                 <div class="overlay position-relative bg-light">
                                     <div class="mb-2" style="font-size: 14px;">
-                                        <a href="single.php?id=<?= $resultview['id'] ?>"><?= $resultview['blog_name'] ?></a>
+                                        <a><?= $resultview['category_name'] ?></a>
                                         <span class="px-1">/</span>
                                         <span><?= $resultview['created_on'] ?></span>
                                     </div>
-                                    <a class="h4" href="single.php?id=<?= $resultview['id'] ?>"><?= substr(strip_tags(html_entity_decode($resultview['blog_content'])), 0, 50) ?>...</a>
+                                    <a class="h4" href="category.php?id=<?= $resultview['category_id'] ?>"><?= $resultview['blog_name'] ?>...</a>
 
                                 </div>
                             </div>
@@ -282,91 +232,13 @@ $category_sqli = mysqli_fetch_all($category_sql, MYSQLI_ASSOC);
                 </div>
             </div>
 
-            <div class="col-lg-4 pt-3 pt-lg-0">
-                <!-- Social Follow Start -->
-                <div class="pb-3">
-                    <div class="bg-light py-2 px-4 mb-3">
-                        <h3 class="m-0">Follow Us</h3>
-                    </div>
-                    <div class="d-flex mb-3">
-                        <a href="" class="d-block w-50 py-2 px-3 text-white text-decoration-none mr-2" style="background: #39569E;">
-                            <small class="fab fa-facebook-f mr-2"></small><small>12,345 Fans</small>
-                        </a>
-                        <a href="" class="d-block w-50 py-2 px-3 text-white text-decoration-none ml-2" style="background: #52AAF4;">
-                            <small class="fab fa-twitter mr-2"></small><small>12,345 Followers</small>
-                        </a>
-                    </div>
-                    <div class="d-flex mb-3">
-                        <a href="" class="d-block w-50 py-2 px-3 text-white text-decoration-none mr-2" style="background: #0185AE;">
-                            <small class="fab fa-linkedin-in mr-2"></small><small>12,345 Connects</small>
-                        </a>
-                        <a href="" class="d-block w-50 py-2 px-3 text-white text-decoration-none ml-2" style="background: #C8359D;">
-                            <small class="fab fa-instagram mr-2"></small><small>12,345 Followers</small>
-                        </a>
-                    </div>
-                    <div class="d-flex mb-3">
-                        <a href="" class="d-block w-50 py-2 px-3 text-white text-decoration-none mr-2" style="background: #DC472E;">
-                            <small class="fab fa-youtube mr-2"></small><small>12,345 Subscribers</small>
-                        </a>
-                        <a href="" class="d-block w-50 py-2 px-3 text-white text-decoration-none ml-2" style="background: #1AB7EA;">
-                            <small class="fab fa-vimeo-v mr-2"></small><small>12,345 Followers</small>
-                        </a>
-                    </div>
-                </div>
-                <!-- Social Follow End -->
-
-                <!-- Newsletter Start -->
-                <div class="pb-3">
-                    <div class="bg-light py-2 px-4 mb-3">
-                        <h3 class="m-0">Newsletter</h3>
-                    </div>
-                    <div class="bg-light text-center p-4 mb-3">
-                        <p>Aliqu justo et labore at eirmod justo sea erat diam dolor diam vero kasd</p>
-                        <div class="input-group" style="width: 100%;">
-                            <input type="text" class="form-control form-control-lg" placeholder="Your Email">
-                            <div class="input-group-append">
-                                <button class="btn btn-primary">Sign Up</button>
-                            </div>
-                        </div>
-                        <small>Sit eirmod nonumy kasd eirmod</small>
-                    </div>
-                </div>
-                <!-- Newsletter End -->
-
-                <!-- Ads Start -->
-                <div class="mb-3 pb-3">
-                    <a href=""><img class="img-fluid" src="img/news-500x280-4.jpg" alt=""></a>
-                </div>
-                <!-- Ads End -->
-
-
-
-                <!-- Tags Start -->
-                <div class="pb-3">
-                    <div class="bg-light py-2 px-4 mb-3">
-                        <h3 class="m-0">Tags</h3>
-                    </div>
-                    <div class="d-flex flex-wrap m-n1">
-                        <a href="" class="btn btn-sm btn-outline-secondary m-1">Politics</a>
-                        <a href="" class="btn btn-sm btn-outline-secondary m-1">Business</a>
-                        <a href="" class="btn btn-sm btn-outline-secondary m-1">Corporate</a>
-                        <a href="" class="btn btn-sm btn-outline-secondary m-1">Sports</a>
-                        <a href="" class="btn btn-sm btn-outline-secondary m-1">Health</a>
-                        <a href="" class="btn btn-sm btn-outline-secondary m-1">Education</a>
-                        <a href="" class="btn btn-sm btn-outline-secondary m-1">Science</a>
-                        <a href="" class="btn btn-sm btn-outline-secondary m-1">Technology</a>
-                        <a href="" class="btn btn-sm btn-outline-secondary m-1">Foods</a>
-                        <a href="" class="btn btn-sm btn-outline-secondary m-1">Entertainment</a>
-                        <a href="" class="btn btn-sm btn-outline-secondary m-1">Travel</a>
-                        <a href="" class="btn btn-sm btn-outline-secondary m-1">Lifestyle</a>
-                    </div>
-                </div>
-                <!-- Tags End -->
-            </div>
+            <?php
+            require_once('newsletter.php'); ?>
         </div>
     </div>
 </div>
 </div>
 <!-- News With Sidebar End -->
 <?php
-include('./includes/footer.php'); ?>
+include('./includes/footer.php');
+?>

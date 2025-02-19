@@ -24,32 +24,56 @@ function NavbarCategory($con, $OnNavbar, $limit)
 }
 
 // Category which have category status is 1
-function categoryData($con)
+
+function categoryData($con , $limit = null)
 {
-    $category = "SELECT * FROM category WHERE category_status = 1";
+    if($limit !== null){
+    $category = "SELECT * FROM category WHERE category_status = 1 LIMIT $limit";
+}else{
+        $category = "SELECT * FROM category WHERE category_status = 1";
+    }
     $category_sql = mysqli_query($con, $category);
     $category_query = mysqli_fetch_all($category_sql, MYSQLI_ASSOC);
     return $category_query;
 }
 
 // Blogs all data 
-function blogsData($con)
+function blogsData($con ,$limit)
 {
-    $blogs = "SELECT blogs.*, category.category_name FROM `blogs` LEFT JOIN category ON category.id=blogs.category_id";
+    $blogs = "SELECT blogs.*, category.category_name FROM `blogs` LEFT JOIN category ON category.id=blogs.category_id LIMIT $limit";
     $blogs_sql = mysqli_query($con, $blogs);
     $blogs_query = mysqli_fetch_all($blogs_sql, MYSQLI_ASSOC);
     return $blogs_query;
 }
 
-function blogs($con)
+$blogs_var = "blogs.*, category.category_name FROM `blogs` LEFT JOIN category ON category.id=blogs.category_id" ;
+// Latest Blog Function
+function latest($con,$limit)
 {
-    $blogs = "SELECT blogs.*, category.category_name FROM `blogs` LEFT JOIN category ON category.id=blogs.category_id ORDER BY view DESC LIMIT 2";
+    global $blogs_var;
+    $blogs = "SELECT $blogs_var  ORDER BY id DESC LIMIT $limit";
+    $blogs_sql = mysqli_query($con, $blogs);
+    $blogs_query = mysqli_fetch_all($blogs_sql, MYSQLI_ASSOC);
+    return $blogs_query;
+}
+
+function blogs($con,$limit)
+{
+    $blogs = "SELECT blogs.*, category.category_name FROM `blogs` LEFT JOIN category ON category.id=blogs.category_id ORDER BY view DESC LIMIT $limit";
 
     $blogs_sql = mysqli_query($con, $blogs);
     $blogs_query = mysqli_fetch_all($blogs_sql, MYSQLI_ASSOC);
     return $blogs_query;
 }
 
+function blogsLatest($con)
+{
+    $blogs = "SELECT blogs.*, category.category_name FROM `blogs` LEFT JOIN category ON category.id=blogs.category_id ORDER BY id DESC LIMIT 2";
+
+    $blogs_sql = mysqli_query($con, $blogs);
+    $blogs_query = mysqli_fetch_all($blogs_sql, MYSQLI_ASSOC);
+    return $blogs_query;
+}
 // Blogs all Business Data
 function blogsBusiness($con)
 {

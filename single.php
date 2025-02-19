@@ -1,8 +1,9 @@
 <?php
 include('./includes/header.php');
+include('view.php');
 if (isset($_GET['id'])) {
     $id = $_GET['id'];
-    $blogs = "SELECT * FROM `blogs` WHERE id = '$id' ";
+    $blogs = "SELECT blogs.*, category.category_name FROM `blogs` LEFT JOIN category ON category.id=blogs.category_id WHERE category_id = '$id' ";
     $blogs_sql = mysqli_query($con, $blogs);
     $blogs_query = mysqli_fetch_assoc($blogs_sql);
 } else {
@@ -20,13 +21,13 @@ if (isset($_GET['id'])) {
                     <img class="img-fluid w-100" src="./admin/<?= htmlspecialchars($blogs_query['blog_image']) ?>" style="object-fit: cover;">
                     <div class="overlay position-relative bg-light">
                         <div class="mb-3">
-                            <a href=""><?= $blogs_query['blog_name'] ?></a>
+                            <a href=""><?= $blogs_query['category_name'] ?></a>
                             <span class="px-1">/</span>
                             <span><?= $blogs_query['created_on'] ?></span>
                         </div>
                         <div>
-                            <h3 class="mb-3"><?= substr(strip_tags(html_entity_decode($blogs_query['blog_content'])), 0, 55) ?></h3>
-                            <p><?= substr(strip_tags(html_entity_decode($blogs_query['blog_content'])), 55) ?></p>
+                            <h3 class="mb-3"><?= $blogs_query['blog_name'] ?></h3>
+                            <p><?= substr(strip_tags(html_entity_decode($blogs_query['blog_content'])), 0) ?></p>
                         </div>
                     </div>
                 </div>

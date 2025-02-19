@@ -1,10 +1,20 @@
 <?php
 require_once './includes/header.php';
-
+// $user = $_SESSION['user_id'];
+// $user = "SELECT * FROM users WHERE id = $user";
+// $user_query = mysqli_query($con, $user);
+// $user_sql = mysqli_fetch_assoc($user_query);
+// pr($user_sql);
+// pr(md5($user_sql['password']));
 if (isset($_POST['update'])) {
     $new_name = mysqli_real_escape_string($con, trim($_POST['user_name']));
     $new_password = mysqli_real_escape_string($con, trim($_POST['password']));
-    $update_name = "UPDATE `users` SET user_name = '$new_name' AND password = '$new_password' WHERE id = '" . $_SESSION['user_id'] . "' ";
+
+    $user = "SELECT * FROM users WHERE user_name = $new_name" ;
+    $user_query = mysqli_query($con,$user);
+    $user_sql = mysqli_fetch_all($user_query);
+    pr($user_sql);
+    $update_name = "UPDATE `users` SET user_name = '$new_name' WHERE id = '" . $_SESSION['user_id'] . "' ";
     $update_query = mysqli_query($con, $update_name);
     if ($update_query) {
         header('location: index.php');
