@@ -8,15 +8,16 @@ require_once './includes/header.php';
 // pr(md5($user_sql['password']));
 if (isset($_POST['update'])) {
     $new_name = mysqli_real_escape_string($con, trim($_POST['user_name']));
-    $new_password = mysqli_real_escape_string($con, trim($_POST['password']));
 
-    $user = "SELECT * FROM users WHERE user_name = $new_name" ;
-    $user_query = mysqli_query($con,$user);
-    $user_sql = mysqli_fetch_all($user_query);
-    pr($user_sql);
+    // $user = "SELECT * FROM users WHERE user_name = $new_name" ;
+    // $user_query = mysqli_query($con,$user);
+    // $user_sql = mysqli_fetch_all($user_query);
+    // pr($user_sql);
     $update_name = "UPDATE `users` SET user_name = '$new_name' WHERE id = '" . $_SESSION['user_id'] . "' ";
     $update_query = mysqli_query($con, $update_name);
     if ($update_query) {
+        $_SESSION['user_name'] = $update_query['user_name'];
+        pr($_SESSION['user_name']);
         header('location: index.php');
         die();
     }
@@ -46,17 +47,14 @@ if (isset($_POST['update'])) {
                     <form action="" method="post">
                         <div class="card-body">
                             <div class="form-group">
-                                <label for="name">Update Your Name</label>
+                                <label for="name">Your Name</label>
                                 <input type="text" class="form-control" id="name" name="user_name" value="<?= $_SESSION['user_name'] ?>" autofocus>
                             </div>
                             <div class="form-group">
                                 <label for="name">Your Email</label>
-                                <input type="text" class="form-control" id="name" name="user_email" value="<?= $_SESSION['user_email'] ?>" autofocus>
+                                <input type="text" disabled class="form-control" id="name" name="user_email" value="<?= $_SESSION['user_email'] ?>" autofocus>
                             </div>
-                            <div class="form-group">
-                                <label for="name">Update Your Password</label>
-                                <input type="text" class="form-control" id="name" name="password" value="<?= $_SESSION['password'] ?>" autofocus>
-                            </div>
+                           
                         </div>
                         <div class="card-footer">
                             <button type="submit" class="btn btn-primary" name="update">Submit</button>

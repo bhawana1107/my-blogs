@@ -82,16 +82,16 @@ $category_sqli = mysqli_fetch_all($category_sql, MYSQLI_ASSOC);
             <a class="text-secondary font-weight-medium text-decoration-none" href="all_categories.php">View All</a>
         </div>
         <div class="owl-carousel owl-carousel-2 carousel-item-4 position-relative">
-            <?php foreach (blogsData($con, 5) as $key => $result) {   ?>
+            <?php foreach (featureData($con, 5) as $key => $result) {   ?>
                 <div class="position-relative overflow-hidden" style="height: 300px;">
                     <img class="img-fluid w-100 h-100" src="./admin/<?= htmlspecialchars($result['blog_image']) ?>" style="object-fit: cover;">
                     <div class="overlay">
                         <div class="mb-1" style="font-size: 13px;">
-                            <a class="text-white" href="single.php?id=<?= $result['id'] ?>"><?= $result['category_name'] ?></a>
+                            <a class="text-white"><?= $result['category_name'] ?></a>
                             <span class="px-1 text-white">/</span>
                             <a class="text-white" href=""><?= $result['created_on'] ?></a>
                         </div>
-                        <a class="h6 m-0 text-white font-weight-bold" href="single.php?id=<?= $result['id'] ?>"><?= substr(strip_tags(html_entity_decode($result['blog_content'])), 0, 100) ?></a>
+                        <a class="h6 m-0 text-white font-weight-bold" href="category.php?id=<?= $result['category_id'] ?>"><?= $result['blog_name'] ?></a>
                     </div>
                 </div>
             <?php } ?>

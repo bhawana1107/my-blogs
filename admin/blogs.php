@@ -15,8 +15,7 @@ if ($_SESSION['user_id'] == 1) {
     $existed_blog = "SELECT blogs.*, category.category_name, users.user_name"
         . " FROM `blogs`"
         . " LEFT JOIN category ON category.id=blogs.category_id"
-        . " LEFT JOIN users ON users.id=blogs.created_by"
-       ;
+        . " LEFT JOIN users ON users.id=blogs.created_by";
 
     $existed_blog_query = mysqli_query($con, $existed_blog);
     $blog_result = mysqli_fetch_all($existed_blog_query, MYSQLI_ASSOC);
@@ -32,7 +31,6 @@ if ($_SESSION['user_id'] == 1) {
     $existeduser_blog_query = mysqli_query($con, $existeduser_blog);
     $blog_result = mysqli_fetch_all($existeduser_blog_query, MYSQLI_ASSOC);
 
-    pr($blog_result);
 }
 ?>
 
@@ -71,8 +69,11 @@ if ($_SESSION['user_id'] == 1) {
                                     <th>Blog Name</th>
                                     <th>Blog Category</th>
                                     <th>Blog Image</th>
+                                    <th>Tags</th>
                                     <th>Created By</th>
+                                    <th>Is Featured</th>
                                     <th>Blog Status</th>
+
                                     <th>Actions</th>
                                 </tr>
                             </thead>
@@ -80,6 +81,7 @@ if ($_SESSION['user_id'] == 1) {
                                 <?php
                                 if (is_array($blog_result) && count($blog_result)) {
                                     foreach ($blog_result as $key => $blog_res) {
+                                 
                                 ?>
                                         <tr class="align-middle">
                                             <td><?= $key + 1 ?></td>
@@ -88,8 +90,20 @@ if ($_SESSION['user_id'] == 1) {
                                             <td>
                                                 <img src="<?= htmlspecialchars($blog_res['blog_image']) ?>" width="100" height="100" />
                                             </td>
-
+                                            <td><?= $blog_res['blog_tag'] ?></td>
                                             <td><?= $blog_res['user_name'] ?></td>
+                                            <td>
+                                                <form action="blog_status.php" method="post">
+                                                    <input type="hidden" name="feature_id" value="<?= $blog_res['id'] ?>">
+                                                    <?php if ($blog_res['is_featured'] == 1) { ?>
+                                                        <input type="hidden" name="feature" value="0">
+                                                        <button type="submit" class="btn btn-success" name="status_btn">On</button>
+                                                    <?php } else { ?>
+                                                        <input type="hidden" name="feature" value="1">
+                                                        <button type="submit" class="btn btn-danger" name="status_btn">Off</button>
+                                                    <?php } ?>
+                                                </form>
+                                            </td>
                                             <td>
                                                 <form action="blog_status.php" method="post">
                                                     <input type="hidden" name="status_id" value="<?= $blog_res['id'] ?>">

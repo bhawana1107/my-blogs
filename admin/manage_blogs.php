@@ -8,12 +8,19 @@ $category = "SELECT * FROM `category` ";
 $category_query = mysqli_query($con, $category);
 $category_result = mysqli_fetch_all($category_query, MYSQLI_ASSOC);
 
+
+                         $existed_tags = "SELECT * FROM tags ";
+                            $existed_tags_sql = mysqli_query($con, trim($existed_tags));
+                            $existed_tags_result = mysqli_fetch_all($existed_tags_sql, MYSQLI_ASSOC);
+
+
 $errors = [];
 $success = '';
 $blog_name = "";
 $blog_category = "";
 $blog_content = "";
 $blog_image = "";
+$blog_tag = "";
 // IF EDIT DONE
 if (isset($_GET['edit_id'])) {
     $edit_id = mysqli_real_escape_string($con, trim($_GET['edit_id']));
@@ -24,6 +31,7 @@ if (isset($_GET['edit_id'])) {
     $blog_category = $existed_blog_sql_res['category_id'];
     $blog_image = $existed_blog_sql_res['blog_image'];
     $blog_content = $existed_blog_sql_res['blog_content'];
+    $blog_tag = $existed_blog_sql_res['blog_tag'];
 }
 
 // IF ADD BLOG DONE
@@ -31,7 +39,10 @@ if (isset($_POST['submit'])) {
 
     $blog_name = mysqli_real_escape_string($con, trim($_POST['blog_name']));
     $blog_category = mysqli_real_escape_string($con, trim($_POST['blog_category']));
+    $blog_tag = mysqli_real_escape_string($con, trim($_POST['blog_tag']));
+
     $blog_content = mysqli_real_escape_string($con, trim($_POST['blog_content']));
+
     $blog_content = htmlspecialchars($blog_content);
     $date = date('y-m-d');
     if (!empty($_FILES['blog_image']['name'])) {
@@ -46,12 +57,12 @@ if (isset($_POST['submit'])) {
         }
     }
 
-    if ($blog_name === '' || $blog_category === 'choose' || $blog_content === '' || $blog_image === '') {
+    if ($blog_name === '' || $blog_category === 'choose' || $blog_content === '' || $blog_image === ''|| $blog_tag === '') {
         $errors[] = 'Please fill all details';
     }
 
     $existed_blog = "SELECT * FROM `blogs` WHERE blog_name = '$blog_name' AND category_id = '$blog_category' AND blog_image = '$blog_image' AND
-    blog_content = '$blog_content'";
+    blog_content = '$blog_content' AND blog_tag = '$blog_tag'";
     $existed_blog_sql = mysqli_query($con, $existed_blog);
 
     if (mysqli_num_rows($existed_blog_sql) > 0) {
@@ -71,7 +82,7 @@ if (isset($_POST['submit'])) {
         if ($_GET['edit_id']) {
             $update_blog = "UPDATE `blogs` SET blog_name = '$blog_name' ,"
                 . " category_id = '$blog_category' , blog_image = '$blog_image' ,"
-                . " blog_content = '$blog_content' ,created_on = '$date'"
+                . " blog_content = '$blog_content' ,created_on = '$date' , blog_tag = '$blog_tag'"
                 . " WHERE id='" . $_GET['edit_id'] . "'";
             $update_blog_sql = mysqli_query($con, $update_blog);
             $_SESSION['success'] = 'blog Updated Successfully';
@@ -79,7 +90,7 @@ if (isset($_POST['submit'])) {
             die();
         } else {
             $user_id = $_SESSION['user_id'];
-            $blog_add = "INSERT INTO `blogs` (blog_name ,category_id ,blog_image, blog_content,user_id,created_on,created_by) VALUES ('$blog_name','$blog_category','$blog_image','$blog_content','$user_id','$date','$user_id')";
+            $blog_add = "INSERT INTO `blogs` (blog_name ,category_id ,blog_image, blog_content,user_id,created_on,created_by,blog_tag) VALUES ('$blog_name','$blog_category','$blog_image','$blog_content','$user_id','$date','$user_id' , '$blog_tag')";
             $blog_add_query = mysqli_query($con, $blog_add);
             if ($blog_add_query) {
                 $_SESSION['success'] = 'blog Add Successfully';
@@ -154,6 +165,23 @@ if (!empty($success)) {
                                         if ($category_res['category_status'] == 1) {
                                 ?>
                                             <option value="<?= $category_res['id'] ?>" <?= ($blog_category == $category_res['id'] ? 'selected' : '') ?>><?= $category_res['category_name'] ?></option>
+                                <?php }
+                                    }
+                                }
+                                ?>
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label for="blogCategory" class="form-label">Tags</label>
+                            <select class="form-select" id="blogCategory" name="blog_tag" value="<?= $blog_tag ?>" autofocus>
+                                <option selected="" value="choose">Choose...</option>
+
+                                <?php
+                                if (is_array($existed_tags_result) && count($existed_tags_result)) {
+                                    foreach ($existed_tags_result as $key => $tag_res) {
+                                        if ($tag_res['tag_status'] == 1) {
+                                ?>
+                                            <option value="<?= $tag_res['tag_name'] ?>" <?= ($blog_tag == $tag_res['tag_name'] ? 'selected' : '') ?>><?= $tag_res['tag_name'] ?></option>
                                 <?php }
                                     }
                                 }

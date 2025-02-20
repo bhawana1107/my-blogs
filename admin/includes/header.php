@@ -305,6 +305,10 @@ if (!isset($_SESSION['is_login']) || $_SESSION['is_login'] !== true) {
                                     <i class="nav-icon bi bi-circle"></i>
                                     <p>Users</p>
                                 </a></li>
+                            <li class="nav-item"><a href="tags.php" class="nav-link active">
+                                    <i class="nav-icon bi bi-circle"></i>
+                                    <p>Tags</p>
+                                </a></li>
                         <?php endif; ?>
                         <li class="nav-item ">
                             <a href="blogs.php" class="nav-link active">
