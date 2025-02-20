@@ -51,14 +51,9 @@ function blogsData($con, $limit = null)
 }
 
 // Blogs all data 
-function tagData($con, $status = null)
+function tagData($con)
 {
-    if ($status !== null) {
-        $tag = "SELECT * FROM `tags` WHERE tag_status = $status";
-    } else {
-        $tag = "SELECT * FROM `tags`";
-
-    }
+        $tag = "SELECT * FROM `tags` WHERE tag_status = 1";
     $tag_sql = mysqli_query($con, $tag);
     $tag_query = mysqli_fetch_all($tag_sql, MYSQLI_ASSOC);
     return $tag_query;

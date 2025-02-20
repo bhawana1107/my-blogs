@@ -125,7 +125,7 @@ $existed_category_result = mysqli_fetch_all($existed_category_sql, MYSQLI_ASSOC)
     </div>
 </div>
 
-<?php include_once "./includes/footer.php" ?>
+<?php include_once "./includes/footer.php" ;?>
 <!-- SCRIPT FOR DELETE ALERT -->
 <script>
     $('.delete_btn').click(function(e) {

@@ -16,12 +16,16 @@ if (isset($_POST['update'])) {
     $update_name = "UPDATE `users` SET user_name = '$new_name' WHERE id = '" . $_SESSION['user_id'] . "' ";
     $update_query = mysqli_query($con, $update_name);
     if ($update_query) {
-        $_SESSION['user_name'] = $update_query['user_name'];
-        pr($_SESSION['user_name']);
+        $_SESSION['user_name'] = $new_name;
+        $_SESSION['success'] = 'Updated Successfully';
+
         header('location: index.php');
         die();
     }
 }
+
+
+
 ?>
 
 <div class="app-content-header">
@@ -54,7 +58,7 @@ if (isset($_POST['update'])) {
                                 <label for="name">Your Email</label>
                                 <input type="text" disabled class="form-control" id="name" name="user_email" value="<?= $_SESSION['user_email'] ?>" autofocus>
                             </div>
-                           
+
                         </div>
                         <div class="card-footer">
                             <button type="submit" class="btn btn-primary" name="update">Submit</button>
