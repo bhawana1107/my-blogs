@@ -1,4 +1,6 @@
 <?php
+error_reporting(E_ALL);
+ini_set('display_errors', 1);
 require_once './includes/header.php';
 @include '../private.php';
 $ck_editor_key = defined('CK_EDITOR_KEY') ? CK_EDITOR_KEY : 'nhi h';
@@ -9,9 +11,9 @@ $category_query = mysqli_query($con, $category);
 $category_result = mysqli_fetch_all($category_query, MYSQLI_ASSOC);
 
 
-                         $existed_tags = "SELECT * FROM tags ";
-                            $existed_tags_sql = mysqli_query($con, trim($existed_tags));
-                            $existed_tags_result = mysqli_fetch_all($existed_tags_sql, MYSQLI_ASSOC);
+$existed_tags = "SELECT * FROM tags ";
+$existed_tags_sql = mysqli_query($con, trim($existed_tags));
+$existed_tags_result = mysqli_fetch_all($existed_tags_sql, MYSQLI_ASSOC);
 
 
 $errors = [];
@@ -57,7 +59,7 @@ if (isset($_POST['submit'])) {
         }
     }
 
-    if ($blog_name === '' || $blog_category === 'choose' || $blog_content === '' || $blog_image === ''|| $blog_tag === '') {
+    if ($blog_name === '' || $blog_category === 'choose' || $blog_content === '' || $blog_image === '' || $blog_tag === '') {
         $errors[] = 'Please fill all details';
     }
 
@@ -79,7 +81,7 @@ if (isset($_POST['submit'])) {
 
     if (empty($errors)) {
 
-        if ($_GET['edit_id']) {
+        if (isset($_GET['edit_id'])) {
             $update_blog = "UPDATE `blogs` SET blog_name = '$blog_name' ,"
                 . " category_id = '$blog_category' , blog_image = '$blog_image' ,"
                 . " blog_content = '$blog_content' ,created_on = '$date' , blog_tag = '$blog_tag'"
@@ -94,6 +96,29 @@ if (isset($_POST['submit'])) {
             $blog_add_query = mysqli_query($con, $blog_add);
             if ($blog_add_query) {
                 $_SESSION['success'] = 'blog Add Successfully';
+                // $email_check = "SELECT * FROM `newsletter`";
+                // $email_check = mysqli_query($con, $email_check);
+                // $email_check_query = mysqli_fetch_all($email_check,MYSQLI_ASSOC);
+                // foreach($email_check as $result){
+
+
+                $to = "hapen18909@bitflirt.com";
+                $subject = "NEW BLOG";
+                $txt = "Hello Guys New Blog Added On MY BLOGS";
+                $headers = "From: bhawana6851@gmail.com";
+
+                if (mail($to, $subject, $txt, $headers)) {
+                    echo "Email sent successfully!";
+                } else {
+                    echo "Email sending failed.";
+                    $error = error_get_last();
+                    echo "<pre>";
+                    print_r($error);
+                    echo "</pre>";
+                }
+
+                return;
+                // }
                 header('location: blogs.php');
                 die();
             } else {

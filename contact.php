@@ -46,6 +46,12 @@ require_once('./includes/header.php'); ?>
                         $message = mysqli_real_escape_string($con, trim($_POST['message']));
                         $detail_query = "INSERT INTO `user_details` (name,email,subject,message)  VALUES ('$name','$email','$subject','$message') ";
                         $detail_sql = mysqli_query($con, $detail_query);
+                        
+                    
+                            if ($detail_sql) {
+                                echo '<script>alert("Submitted Successfully")</script>';
+                            }
+                  
                     } ?>
                     <form method="post">
                         <div class="form-row">
