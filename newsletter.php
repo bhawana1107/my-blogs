@@ -1,24 +1,24 @@
   <?php
-    if (isset($_POST['signup'])) {
-        $email = mysqli_real_escape_string($con, trim($_POST['email']));
-        
-        $email_check = "SELECT * FROM `newsletter` WHERE email = '$email'";
-        $email_check = mysqli_query($con,$email_check);
-        if(mysqli_num_rows($email_check)){
-                echo '<script>alert("Email Already Exist")</script>';
-        }else{
-        $email_query = "INSERT INTO `newsletter` (email)  VALUES ('$email') ";
-        $email_sql = mysqli_query($con, $email_query);
-       if($email_sql){
-        echo '<script>alert("Email Submitted Successfully")</script>';
-       
-    }
-} 
-    }
+        if (isset($_POST['signup'])) {
+            $email = mysqli_real_escape_string($con, trim($_POST['email']));
 
- ?>
+            $email_check = "SELECT * FROM `newsletter` WHERE email = '$email'";
+            $email_check = mysqli_query($con,$email_check);
+            if(mysqli_num_rows($email_check)){
+                    echo '<script>alert("Email Already Exist")</script>';
+            }else{
+            $email_query = "INSERT INTO `newsletter` (email)  VALUES ('$email') ";
+            $email_sql = mysqli_query($con, $email_query);
+           if($email_sql){
+            echo '<script>alert("Email Submitted Successfully")</script>';
+
+        }
+    } 
+        }
+
+    ?>
   <div class="col-lg-4 pt-3 pt-lg-0">
-     
+
 
       <!-- Newsletter Start -->
       <div class="pb-3">

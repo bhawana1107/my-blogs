@@ -38,22 +38,23 @@ require_once('./includes/header.php'); ?>
             <div class="col-md-7">
                 <div class="contact-form bg-light mb-3" style="padding: 30px;">
                     <div id="success"></div>
-                    <?php
-                    if (isset($_POST['send'])) {
-                        $name = mysqli_real_escape_string($con, trim($_POST['name']));
-                        $email = mysqli_real_escape_string($con, trim($_POST['email']));
-                        $subject = mysqli_real_escape_string($con, trim($_POST['subject']));
-                        $message = mysqli_real_escape_string($con, trim($_POST['message']));
-                        $detail_query = "INSERT INTO `user_details` (name,email,subject,message)  VALUES ('$name','$email','$subject','$message') ";
-                        $detail_sql = mysqli_query($con, $detail_query);
+                    <!-- <?php -->
+                    // if (isset($_POST['send'])) {
+                    //     $name = mysqli_real_escape_string($con, trim($_POST['name']));
+                    //     $email = mysqli_real_escape_string($con, trim($_POST['email']));
+                    //     $subject = mysqli_real_escape_string($con, trim($_POST['subject']));
+                    //     $message = mysqli_real_escape_string($con, trim($_POST['message']));
+                    //     $detail_query = "INSERT INTO `user_details` (name,email,subject,message)  VALUES ('$name','$email','$subject','$message') ";
+                    //     $detail_sql = mysqli_query($con, $detail_query);
                         
                     
-                            if ($detail_sql) {
-                                echo '<script>alert("Submitted Successfully")</script>';
-                            }
+                            // if ($detail_sql) {
+                            //     echo '<script>alert("Submitted Successfully")</script>';
+                            // }
                   
-                    } ?>
-                    <form method="post">
+                    // }
+                    //  ?>
+                    <!-- <form method="post">
                         <div class="form-row">
                             <div class="col-md-6">
                                 <div class="control-group">
@@ -79,7 +80,7 @@ require_once('./includes/header.php'); ?>
                         <div>
                             <button class="btn btn-primary font-weight-semi-bold px-4" style="height: 50px;" type="submit" id="sendMessageButton" name="send">Send Message</button>
                         </div>
-                    </form>
+                    </form> -->
                 </div>
             </div>
         </div>
