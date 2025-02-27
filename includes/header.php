@@ -1,5 +1,9 @@
 <?php require_once "./admin/includes/db.php";
 ob_start();
+
+                    $existed_website_blog = "SELECT * FROM `websitedetails`";
+                    $existed_website_query = mysqli_query($con, $existed_website_blog);
+                    $website_result = mysqli_fetch_all($existed_website_query, MYSQLI_ASSOC);
 ?>
 <!DOCTYPE html>
 <html lang="en">

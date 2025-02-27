@@ -316,6 +316,12 @@ if (!isset($_SESSION['is_login']) || $_SESSION['is_login'] !== true) {
                                 <p>Blogs</p>
                             </a>
                         </li>
+                        <li class="nav-item ">
+                            <a href="website_setting.php" class="nav-link active">
+                                <i class="nav-icon bi bi-circle"></i>
+                                <p>Website Setting</p>
+                            </a>
+                        </li>
                     </ul>
                     <!--end::Sidebar Menu-->
                 </nav>

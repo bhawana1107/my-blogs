@@ -16,21 +16,21 @@ require_once('./includes/header.php'); ?>
                         <i class="fa fa-2x fa-map-marker-alt text-primary mr-3"></i>
                         <div class="d-flex flex-column">
                             <h6 class="font-weight-bold">Our Office</h6>
-                            <p class="m-0">New Delhi</p>
+                            <p class="m-0"><?= $website_result[0]['branch_address'] ?></p>
                         </div>
                     </div>
                     <div class="d-flex align-items-center mb-3">
                         <i class="fa fa-2x fa-envelope-open text-primary mr-3"></i>
                         <div class="d-flex flex-column">
                             <h6 class="font-weight-bold">Email Us</h6>
-                            <p class="m-0">info@example.com</p>
+                            <p class="m-0"><?= $website_result[0]['website_email'] ?></p>
                         </div>
                     </div>
                     <div class="d-flex align-items-center">
                         <i class="fas fa-2x fa-phone-alt text-primary mr-3"></i>
                         <div class="d-flex flex-column">
                             <h6 class="font-weight-bold">Call Us</h6>
-                            <p class="m-0">+012 345 6789</p>
+                            <p class="m-0"><?= $website_result[0]['website_phone'] ?></p>
                         </div>
                     </div>
                 </div>
@@ -38,23 +38,21 @@ require_once('./includes/header.php'); ?>
             <div class="col-md-7">
                 <div class="contact-form bg-light mb-3" style="padding: 30px;">
                     <div id="success"></div>
-                    <!-- <?php -->
-                    // if (isset($_POST['send'])) {
-                    //     $name = mysqli_real_escape_string($con, trim($_POST['name']));
-                    //     $email = mysqli_real_escape_string($con, trim($_POST['email']));
-                    //     $subject = mysqli_real_escape_string($con, trim($_POST['subject']));
-                    //     $message = mysqli_real_escape_string($con, trim($_POST['message']));
-                    //     $detail_query = "INSERT INTO `user_details` (name,email,subject,message)  VALUES ('$name','$email','$subject','$message') ";
-                    //     $detail_sql = mysqli_query($con, $detail_query);
-                        
-                    
-                            // if ($detail_sql) {
-                            //     echo '<script>alert("Submitted Successfully")</script>';
-                            // }
-                  
-                    // }
-                    //  ?>
-                    <!-- <form method="post">
+                    <?php
+                    if (isset($_POST['send'])) {
+                        $name = mysqli_real_escape_string($con, trim($_POST['name']));
+                        $email = mysqli_real_escape_string($con, trim($_POST['email']));
+                        $subject = mysqli_real_escape_string($con, trim($_POST['subject']));
+                        $message = mysqli_real_escape_string($con, trim($_POST['message']));
+                        $detail_query = "INSERT INTO `user_details` (name,email,subject,message)  VALUES ('$name','$email','$subject','$message') ";
+                        $detail_sql = mysqli_query($con, $detail_query);
+
+
+                        if ($detail_sql) {
+                            echo '<script>alert("Submitted Successfully")</script>';
+                        }
+                    } ?>
+                    <form method="post">
                         <div class="form-row">
                             <div class="col-md-6">
                                 <div class="control-group">
@@ -80,7 +78,7 @@ require_once('./includes/header.php'); ?>
                         <div>
                             <button class="btn btn-primary font-weight-semi-bold px-4" style="height: 50px;" type="submit" id="sendMessageButton" name="send">Send Message</button>
                         </div>
-                    </form> -->
+                    </form>
                 </div>
             </div>
         </div>
