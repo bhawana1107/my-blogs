@@ -1,56 +1,67 @@
 <?php
-require_once 'includes/db.php';
+require 'PHPMailer/src/PHPMailer.php';
+require 'PHPMailer/src/SMTP.php';
+require 'PHPMailer/src/Exception.php';
 
-$errors = [];
-$success = '';
-$user_name = '';
-$email = '';
-$password = '';
+use PHPMailer\PHPMailer\PHPMailer;
+use PHPMailer\PHPMailer\Exception;
 
-if (isset($_POST['signup'])) {
-    $user_name = mysqli_real_escape_string($con, trim($_POST['user_name']));
-    $email = mysqli_real_escape_string($con, trim($_POST['email']));
-    $password = mysqli_real_escape_string($con, trim($_POST['password']));
-    $role_id = 2;
+if (isset($_POST['submit'])) {
+    include 'includes/db.php'; // Database connection file
+    $email = mysqli_real_escape_string($con, $_POST['email']);
 
-    // Data validation
-    if ($user_name === '') {
-        $errors[] = 'User Name cannot be blank';
-    }
-    if ($email === '') {
-        $errors[] = 'Email cannot be blank';
-    }
-    if ($password === '') {
-        $errors[] = 'Password cannot be blank';
-    }
+    // Check if email exists
+    $userQuery = "SELECT * FROM users WHERE email = '$email'";
+    $result = mysqli_query($con, $userQuery);
+    $user = mysqli_fetch_assoc($result);
 
+    if ($user) {
+        // Generate unique token
+        $token = bin2hex(random_bytes(50)); // 50-character random string
+        $expiry = date("Y-m-d H:i:s", strtotime("+15 minutes")); // Token expires in 1 hour
 
-    // Data verification
-    if (empty($errors)) {
-        $hashPassword = md5($password);
-        $existedUser = "SELECT * FROM users WHERE user_name = '$user_name'AND
-    email = '$email' AND password = '$hashPassword'";
-        $existedUserSql = mysqli_query($con, $existedUser);
+        // Store token in database
+        $updateToken = "UPDATE users SET reset_token='$token', reset_token_expiry='$expiry' WHERE email='$email'";
+        mysqli_query($con, $updateToken);
 
-        if (mysqli_num_rows($existedUserSql)) {
-            $errors = "User Already Exist";
-        } else {
-            $insertUser = "INSERT INTO users (user_name,email,password,roleid) VALUES
-   ('$user_name','$email','$hashPassword','$role_id')";
-            $insertUserSql = mysqli_query($con, $insertUser);
-            header('location: login.php');
-            exit();
+        // Send reset email using PHPMailer
+        $mail = new PHPMailer(true);
+        try {
+            $mail->isSMTP();
+            $mail->Host = 'smtp.gmail.com';
+            $mail->SMTPAuth = true;
+            $mail->Username = 'bhawana6851@gmail.com'; // Your email
+            $mail->Password = 'gbbf dgob mcjb hwfu'; // Use app password
+            $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
+            $mail->Port = 587;
+
+            $mail->setFrom('bhawana6851@gmail.com', 'MY BLOGS');
+            $mail->addAddress($email);
+
+            $resetLink = "http://localhost/my-blog/admin/reset_password.php?token=$token";
+
+            $mail->isHTML(true);
+            $mail->Subject = "Password Reset Request";
+            $mail->Body = "Click the link to reset your password: <a href='$resetLink'>$resetLink</a>";
+
+            $mail->send();
+            echo "Reset link sent to your email.";
+        } catch (Exception $e) {
+            echo "Email sending failed: {$mail->ErrorInfo}";
         }
+    } else {
+        echo "No account found with this email.";
     }
 }
 ?>
+
 <!DOCTYPE html>
 <html lang="en">
 <!--begin::Head-->
 
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>MY BLOG | Register Page</title>
+    <title>MY BLOG | Forget Password Page</title>
     <!--begin::Primary Meta Tags-->
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="title" content="AdminLTE 4 | Login Page" />
@@ -83,78 +94,55 @@ if (isset($_POST['signup'])) {
     <!--begin::Required Plugin(AdminLTE)-->
     <link rel="stylesheet" href="css/adminlte.css" />
     <!--end::Required Plugin(AdminLTE)-->
+
+
+
 </head>
 <!--end::Head-->
 <!--begin::Body-->
 
+
+
 <body class="login-page bg-body-secondary">
     <div class="login-box">
         <div class="login-logo">
-            My Blog
+            My Blogs
         </div>
         <!-- /.login-logo -->
         <div class="card">
             <div class="card-body login-card-body">
-                <p class="login-box-msg">Sign Up to start your session</p>
-                <form action="<?= htmlspecialchars($_SERVER['PHP_SELF']) ?>" method="post">
+                <p class="login-box-msg">You forgot your password? Here you can easily retrieve a new password.</p>
+
+                <form action="" method="post">
                     <div class="input-group mb-3">
-                        <input type="text" class="form-control" placeholder="Name" name="user_name" />
-                        <div class="input-group-text">
-                            <span class="bi bi-person"></span>
+                        <input type="email" class="form-control" placeholder="Email" name="email">
+                        <div class="input-group-append">
+                            <!-- <div class="input-group-text">
+                                <span class="fas fa-envelope"></span>
+                            </div> -->
                         </div>
                     </div>
-                    <div class="input-group mb-3">
-                        <input type="email" class="form-control" placeholder="Email" name="email" />
-                        <div class="input-group-text">
-                            <span class="bi bi-envelope"></span>
-                        </div>
-                    </div>
-                    <div class="input-group mb-3">
-                        <input
-                            type="password"
-                            class="form-control"
-                            placeholder="Password" name="password" />
-                        <div class="input-group-text">
-                            <span class="bi bi-lock-fill"></span>
-                        </div>
-                    </div>
-                    <!--begin::Row-->
                     <div class="row">
-                        <div class="col-8">
-                            <div class="form-check">
-                                <input
-                                    class="form-check-input"
-                                    type="checkbox"
-                                    value=""
-                                    id="flexCheckDefault" />
-                                <label class="form-check-label" for="flexCheckDefault">
-                                    Remember Me
-                                </label>
-                            </div>
-                        </div>
-                        <!-- /.col -->
-                        <div class="col-4">
-                            <div class="d-grid gap-2">
-                                <button type="submit" class="btn btn-primary" name="signup">Sign Up</button>
-                            </div>
+                        <div class="col-12">
+                            <button type="submit" class="btn btn-primary btn-block" name="submit">Request new password</button>
                         </div>
                         <!-- /.col -->
                     </div>
-                    <!--end::Row-->
                 </form>
 
-                <!-- /.social-auth-links -->
-
+                <p class="mt-3 mb-1">
+                    <a href="login.php">Login</a>
+                </p>
                 <p class="mb-0">
-                    <a href="login.php" class="text-center">
-                        Login
-                    </a>
+                    <a href="register.php" class="text-center">Register</a>
                 </p>
             </div>
             <!-- /.login-card-body -->
         </div>
     </div>
     <!-- /.login-box -->
+
+
     <!--begin::Third Party Plugin(OverlayScrollbars)-->
     <script
         src="https://cdn.jsdelivr.net/npm/overlayscrollbars@2.10.1/browser/overlayscrollbars.browser.es6.min.js"

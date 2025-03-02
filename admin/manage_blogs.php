@@ -5,6 +5,16 @@ require_once './includes/header.php';
 @include '../private.php';
 $ck_editor_key = defined('CK_EDITOR_KEY') ? CK_EDITOR_KEY : 'nhi h';
 
+// PHP MAILER
+require 'PHPMailer/src/PHPMailer.php';
+require 'PHPMailer/src/SMTP.php';
+require 'PHPMailer/src/Exception.php';
+
+use PHPMailer\PHPMailer\PHPMailer;
+use PHPMailer\PHPMailer\Exception;
+
+
+
 // GET DATA FROM CATEGORY TABLE FOR CATEGORY NAME
 $category = "SELECT * FROM `category` ";
 $category_query = mysqli_query($con, $category);
@@ -76,7 +86,7 @@ if (isset($_POST['submit'])) {
             }
         } else {
             $errors[] = 'Already existed blog name ';
-        }
+        } 
     }
 
     if (empty($errors)) {
@@ -95,36 +105,53 @@ if (isset($_POST['submit'])) {
             $blog_add = "INSERT INTO `blogs` (blog_name ,category_id ,blog_image, blog_content,user_id,created_on,created_by,blog_tag) VALUES ('$blog_name','$blog_category','$blog_image','$blog_content','$user_id','$date','$user_id' , '$blog_tag')";
             $blog_add_query = mysqli_query($con, $blog_add);
             if ($blog_add_query) {
-                $_SESSION['success'] = 'blog Add Successfully';
-                // $email_check = "SELECT * FROM `newsletter`";
-                // $email_check = mysqli_query($con, $email_check);
-                // $email_check_query = mysqli_fetch_all($email_check,MYSQLI_ASSOC);
-                // foreach($email_check as $result){
 
+                // Fetch all registered users' emails
+                $userQuery = "SELECT email FROM newsletter";
+                $result = mysqli_query($con, $userQuery);
+                // Create a new PHPMailer instance
+                $mail = new PHPMailer(true);
+                $blog_contents =  substr(strip_tags(html_entity_decode($blog_content)), 0) ;
+                try {
+                    // SMTP Configuration
+                    $mail->isSMTP();
+                    $mail->Host = 'smtp.gmail.com';
+                    $mail->SMTPAuth = true;
+                    $mail->Username = 'bhawana6851@gmail.com'; // Your email
+                    $mail->Password = 'gbbf dgob mcjb hwfu'; // Use app password
+                    $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
+                    $mail->Port = 587;
+                    $mail->setFrom('bhawana6851@gmail.com', 'MY BLOGS');
 
-                $to = "hapen18909@bitflirt.com";
-                $subject = "NEW BLOG";
-                $txt = "Hello Guys New Blog Added On MY BLOGS";
-                $headers = "From: bhawana6851@gmail.com";
+                    // Email Content
+                    $mail->isHTML(true);
+                    $mail->Subject = "New Blog Added: $blog_name";
+                    $mail->Body = "<h2>New Blog Published: $date</h2>
+                           <p>$blog_contents </p>
+                           <a href='http://localhost/my-blog/index.php'>Read More</a>";
 
-                if (mail($to, $subject, $txt, $headers)) {
-                    echo "Email sent successfully!";
-                } else {
-                    echo "Email sending failed.";
-                    $error = error_get_last();
-                    echo "<pre>";
-                    print_r($error);
-                    echo "</pre>";
+                    // Send email to all users
+                    while ($row = mysqli_fetch_assoc($result)) {
+                        $mail->addAddress($row['email']);
+                    }
+
+                    if ($mail->send()) {
+                        echo "Email notifications sent successfully!";
+                    }
+                } catch (Exception $e) {
+                    echo "Email sending failed. Error: {$mail->ErrorInfo}";
                 }
-
-                return;
-                // }
-                header('location: blogs.php');
-                die();
             } else {
-                $errors[] = 'Something wrong';
+                echo "Error adding blog: " . mysqli_error($con);
             }
         }
+        $_SESSION['success'] = 'blog Add Successfully';
+        header('location: blogs.php');
+
+
+        die();
+    } else {
+        $errors[] = 'Something wrong';
     }
 }
 

@@ -152,7 +152,7 @@ if (isset($_POST['signin'])) {
 
         <!-- /.social-auth-links -->
         <p class="mb-1">
-          <a href="">I forgot my password</a>
+          <a href="forget-password.php">I forgot my password</a>
         </p>
         <p class="mb-0">
           <a href="register.php" class="text-center">

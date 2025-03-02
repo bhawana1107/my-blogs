@@ -1,56 +1,44 @@
 <?php
-require_once 'includes/db.php';
-
-$errors = [];
-$success = '';
-$user_name = '';
-$email = '';
-$password = '';
-
-if (isset($_POST['signup'])) {
-    $user_name = mysqli_real_escape_string($con, trim($_POST['user_name']));
-    $email = mysqli_real_escape_string($con, trim($_POST['email']));
-    $password = mysqli_real_escape_string($con, trim($_POST['password']));
-    $role_id = 2;
-
-    // Data validation
-    if ($user_name === '') {
-        $errors[] = 'User Name cannot be blank';
-    }
-    if ($email === '') {
-        $errors[] = 'Email cannot be blank';
-    }
-    if ($password === '') {
-        $errors[] = 'Password cannot be blank';
-    }
+include 'includes/db.php'; // Database connection file
 
 
-    // Data verification
-    if (empty($errors)) {
-        $hashPassword = md5($password);
-        $existedUser = "SELECT * FROM users WHERE user_name = '$user_name'AND
-    email = '$email' AND password = '$hashPassword'";
-        $existedUserSql = mysqli_query($con, $existedUser);
+if (!isset($_GET['token'])) {
+    die("Invalid request!");
+}
+$token = $_GET['token'];
 
-        if (mysqli_num_rows($existedUserSql)) {
-            $errors = "User Already Exist";
+if (isset($_POST['reset'])) {
+    $token = mysqli_real_escape_string($con, $_POST['token']);
+    $confirm_password = md5($_POST['confirm_password']);
+    $newPassword = md5($_POST['password']);
+    if ($_POST['confirm_password'] !== $_POST['password']) {
+        echo "Passwords do not match.";
+    } else {
+        // Check token validity
+        $current_time = date("Y-m-d H:i:s");
+        $query = "SELECT * FROM `users` WHERE reset_token = '$token' AND reset_token_expiry > '$current_time'";
+        $result = mysqli_query($con, $query);
+        $user = mysqli_fetch_assoc($result);
+        if ($user) {
+            // Update password
+            $updatePassword = "UPDATE `users` SET password='$newPassword', reset_token=NULL, reset_token_expiry=NULL WHERE reset_token='$token'";
+            $updated =  mysqli_query($con, $updatePassword);
+            echo "Password updated successfully. <a href='login.php'>Login now</a>";
         } else {
-            $insertUser = "INSERT INTO users (user_name,email,password,roleid) VALUES
-   ('$user_name','$email','$hashPassword','$role_id')";
-            $insertUserSql = mysqli_query($con, $insertUser);
-            header('location: login.php');
-            exit();
+            echo "Invalid or expired token!";
         }
     }
 }
 ?>
+
+
 <!DOCTYPE html>
 <html lang="en">
 <!--begin::Head-->
 
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>MY BLOG | Register Page</title>
+    <title>MY BLOG | Recover Password Page</title>
     <!--begin::Primary Meta Tags-->
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="title" content="AdminLTE 4 | Login Page" />
@@ -83,78 +71,54 @@ if (isset($_POST['signup'])) {
     <!--begin::Required Plugin(AdminLTE)-->
     <link rel="stylesheet" href="css/adminlte.css" />
     <!--end::Required Plugin(AdminLTE)-->
+
+
+
 </head>
 <!--end::Head-->
 <!--begin::Body-->
 
+
+
 <body class="login-page bg-body-secondary">
     <div class="login-box">
         <div class="login-logo">
-            My Blog
+            My Blogs
         </div>
         <!-- /.login-logo -->
         <div class="card">
             <div class="card-body login-card-body">
-                <p class="login-box-msg">Sign Up to start your session</p>
-                <form action="<?= htmlspecialchars($_SERVER['PHP_SELF']) ?>" method="post">
+                <p class="login-box-msg">You are only one step a way from your new password, recover your password now.</p>
+
+                <form action="" method="post">
+                    <input type="hidden" name="token" value="<?= htmlspecialchars($token) ?>">
                     <div class="input-group mb-3">
-                        <input type="text" class="form-control" placeholder="Name" name="user_name" />
-                        <div class="input-group-text">
-                            <span class="bi bi-person"></span>
-                        </div>
+                        <input type="password" class="form-control" placeholder="Password" name="password">
+
                     </div>
                     <div class="input-group mb-3">
-                        <input type="email" class="form-control" placeholder="Email" name="email" />
-                        <div class="input-group-text">
-                            <span class="bi bi-envelope"></span>
-                        </div>
+                        <input type="password" class="form-control" placeholder="Confirm Password" name="confirm_password">
+
                     </div>
-                    <div class="input-group mb-3">
-                        <input
-                            type="password"
-                            class="form-control"
-                            placeholder="Password" name="password" />
-                        <div class="input-group-text">
-                            <span class="bi bi-lock-fill"></span>
-                        </div>
-                    </div>
-                    <!--begin::Row-->
                     <div class="row">
-                        <div class="col-8">
-                            <div class="form-check">
-                                <input
-                                    class="form-check-input"
-                                    type="checkbox"
-                                    value=""
-                                    id="flexCheckDefault" />
-                                <label class="form-check-label" for="flexCheckDefault">
-                                    Remember Me
-                                </label>
-                            </div>
-                        </div>
-                        <!-- /.col -->
-                        <div class="col-4">
-                            <div class="d-grid gap-2">
-                                <button type="submit" class="btn btn-primary" name="signup">Sign Up</button>
-                            </div>
+                        <div class="col-12">
+                            <button type="submit" class="btn btn-primary btn-block" name="reset">Change password</button>
                         </div>
                         <!-- /.col -->
                     </div>
-                    <!--end::Row-->
                 </form>
 
-                <!-- /.social-auth-links -->
-
-                <p class="mb-0">
-                    <a href="login.php" class="text-center">
-                        Login
-                    </a>
+                <p class="mt-3 mb-1">
+                    <a href="login.php">Login</a>
                 </p>
             </div>
             <!-- /.login-card-body -->
         </div>
     </div>
     <!-- /.login-box -->
+
+
+
     <!--begin::Third Party Plugin(OverlayScrollbars)-->
     <script
         src="https://cdn.jsdelivr.net/npm/overlayscrollbars@2.10.1/browser/overlayscrollbars.browser.es6.min.js"
