@@ -5,6 +5,7 @@ include 'includes/db.php'; // Database connection file
 if (!isset($_GET['token'])) {
     die("Invalid request!");
 }
+
 $token = $_GET['token'];
 
 if (isset($_POST['reset'])) {

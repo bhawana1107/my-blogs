@@ -1,6 +1,12 @@
 <?php
 require_once './includes/header.php';
 
+// CHECK LOGIN(ADMIN OR USER) 
+if ($_SESSION['roleid'] !== '1') {
+    header('location: error.php');
+    exit;
+}
+
 // SUCCESS BY TOASTR
 if (!empty($_SESSION['success'])) {
     echo "<script>

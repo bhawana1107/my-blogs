@@ -1,9 +1,9 @@
 <?php require_once "./admin/includes/db.php";
 ob_start();
 
-                    $existed_website_blog = "SELECT * FROM `websitedetails`";
-                    $existed_website_query = mysqli_query($con, $existed_website_blog);
-                    $website_result = mysqli_fetch_all($existed_website_query, MYSQLI_ASSOC);
+$existed_website_blog = "SELECT * FROM `websitedetails`";
+$existed_website_query = mysqli_query($con, $existed_website_blog);
+$website_result = mysqli_fetch_all($existed_website_query, MYSQLI_ASSOC);
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -64,13 +64,37 @@ ob_start();
                     <?php } ?>
                     <a href="contact.php" class="nav-item nav-link">Contact Us</a>
                 </div>
-                <div class="input-group ml-auto" style="width: 100%; max-width: 300px;">
-                    <input type="text" class="form-control" placeholder="Keyword">
-                    <div class="input-group-append">
-                        <button class="input-group-text text-secondary"><i
-                                class="fa fa-search"></i></button>
+                <?php
+                if(isset($_POST['search-submit'])){
+                    $search_id = mysqli_real_escape_string($con,trim($_POST['search']));
+                        $search_name = "SELECT * FROM `blogs` WHERE blog_name LIKE '%$search_id%' OR blog_content LIKE '%$search_id%'";
+                        $search_query = mysqli_query($con,$search_name);
+                        $search_res = mysqli_fetch_all($search_query,MYSQLI_ASSOC);
+                           
+
+                      
+                    if (!empty($search_res)) {  
+                        $first_result = $search_res[0]; 
+                     
+                        $src_id = $first_result['category_id'];
+
+                      
+                        header("Location: category.php?id=$src_id");
+                        exit(); 
+                    }         
+                }
+                ?>
+                <form action="" method="post">
+                    <div class="input-group ml-auto" style="width: 100%; max-width: 300px;">
+
+                        <input type="text" class="form-control" placeholder="Keyword" name="search">
+                        <div class="input-group-append">
+                            <button class="input-group-text text-secondary" name="search-submit"><i
+                                    class="fa fa-search"></i></button>
+                        </div>
+
                     </div>
-                </div>
+                </form>
             </div>
         </nav>
     </div>

@@ -86,7 +86,7 @@ if (isset($_POST['submit'])) {
             }
         } else {
             $errors[] = 'Already existed blog name ';
-        } 
+        }
     }
 
     if (empty($errors)) {
@@ -111,7 +111,7 @@ if (isset($_POST['submit'])) {
                 $result = mysqli_query($con, $userQuery);
                 // Create a new PHPMailer instance
                 $mail = new PHPMailer(true);
-                $blog_contents =  substr(strip_tags(html_entity_decode($blog_content)), 0) ;
+                $blog_contents =  substr(strip_tags(html_entity_decode($blog_content)), 0);
                 try {
                     // SMTP Configuration
                     $mail->isSMTP();
@@ -223,6 +223,29 @@ if (!empty($success)) {
                                 ?>
                             </select>
                         </div>
+                        <div class="mb-3">
+                            <label for="blogTags" class="form-label">Tags</label>
+                            <div id="blogTags">
+                                <?php
+                                if (is_array($existed_tags_result) && count($existed_tags_result)) {
+                                    foreach ($existed_tags_result as $key => $tag_res) {
+                                        if ($tag_res['tag_status'] == 1) {
+                                            $checked = (is_array($blog_tag) && in_array($tag_res['tag_name'], $blog_tag)) ? 'checked' : '';
+                                ?>
+                                            <div class="form-check">
+                                                <input class="form-check-input" type="checkbox" name="blog_tag[]" value="<?= $tag_res['tag_name'] ?>" <?= $checked ?>>
+                                                <label class="form-check-label">
+                                                    <?= $tag_res['tag_name'] ?>
+                                                </label>
+                                            </div>
+                                <?php
+                                        }
+                                    }
+                                }
+                                ?>
+                            </div>
+                        </div>
+
                         <div class="mb-3">
                             <label for="blogCategory" class="form-label">Tags</label>
                             <select class="form-select" id="blogCategory" name="blog_tag" value="<?= $blog_tag ?>" autofocus>
