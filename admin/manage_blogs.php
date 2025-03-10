@@ -32,7 +32,7 @@ $blog_name = "";
 $blog_category = "";
 $blog_content = "";
 $blog_image = "";
-$blog_tag = "";
+$blog_tag = [];
 // IF EDIT DONE
 if (isset($_GET['edit_id'])) {
     $edit_id = mysqli_real_escape_string($con, trim($_GET['edit_id']));
@@ -43,7 +43,7 @@ if (isset($_GET['edit_id'])) {
     $blog_category = $existed_blog_sql_res['category_id'];
     $blog_image = $existed_blog_sql_res['blog_image'];
     $blog_content = $existed_blog_sql_res['blog_content'];
-    $blog_tag = $existed_blog_sql_res['blog_tag'];
+    $blog_tag = explode(',', $existed_blog_sql_res['blog_tag']);
 }
 
 // IF ADD BLOG DONE
@@ -51,7 +51,7 @@ if (isset($_POST['submit'])) {
 
     $blog_name = mysqli_real_escape_string($con, trim($_POST['blog_name']));
     $blog_category = mysqli_real_escape_string($con, trim($_POST['blog_category']));
-    $blog_tag = mysqli_real_escape_string($con, trim($_POST['blog_tag']));
+    $blog_tag = !empty($_POST['blog_tag']) ? implode(',', $_POST['blog_tag']) : '';
 
     $blog_content = mysqli_real_escape_string($con, trim($_POST['blog_content']));
 
@@ -73,10 +73,12 @@ if (isset($_POST['submit'])) {
         $errors[] = 'Please fill all details';
     }
 
-    $existed_blog = "SELECT * FROM `blogs` WHERE blog_name = '$blog_name' AND category_id = '$blog_category' AND blog_image = '$blog_image' AND
+    $existed_blog = "SELECT * FROM `blogs` WHERE blog_name = '$blog_name' AND
+     category_id = '$blog_category' AND blog_image = '$blog_image' AND
     blog_content = '$blog_content' AND blog_tag = '$blog_tag'";
     $existed_blog_sql = mysqli_query($con, $existed_blog);
 
+    pr($existed_blog_sql);
     if (mysqli_num_rows($existed_blog_sql) > 0) {
 
         if ($_GET['edit_id']) {
@@ -102,7 +104,9 @@ if (isset($_POST['submit'])) {
             die();
         } else {
             $user_id = $_SESSION['user_id'];
-            $blog_add = "INSERT INTO `blogs` (blog_name ,category_id ,blog_image, blog_content,user_id,created_on,created_by,blog_tag) VALUES ('$blog_name','$blog_category','$blog_image','$blog_content','$user_id','$date','$user_id' , '$blog_tag')";
+            $blog_add = "INSERT INTO `blogs` (blog_name ,category_id ,blog_image, blog_content,user_id,
+            created_on,created_by,blog_tag) VALUES ('$blog_name','$blog_category','$blog_image','$blog_content',
+            '$user_id','$date','$user_id' , '$blog_tag')";
             $blog_add_query = mysqli_query($con, $blog_add);
             if ($blog_add_query) {
 
@@ -170,6 +174,8 @@ if (!empty($success)) {
 }
 ?>
 
+<link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+
 <!-- CK EDITOR LINK -->
 <link rel="stylesheet" href="https://cdn.ckeditor.com/ckeditor5/44.1.0/ckeditor5.css" />
 
@@ -208,7 +214,7 @@ if (!empty($success)) {
                         </div>
                         <div class="mb-3">
                             <label for="blogCategory" class="form-label">Blog Category</label>
-                            <select class="form-select" id="blogCategory" name="blog_category" value="<?= $blog_category ?>" autofocus>
+                            <select class="form-select" id="addblogCategory" name="blog_category" value="<?= $blog_category ?>" autofocus>
                                 <option selected="" value="choose">Choose...</option>
 
                                 <?php
@@ -223,46 +229,28 @@ if (!empty($success)) {
                                 ?>
                             </select>
                         </div>
-                        <div class="mb-3">
-                            <label for="blogTags" class="form-label">Tags</label>
-                            <div id="blogTags">
-                                <?php
-                                if (is_array($existed_tags_result) && count($existed_tags_result)) {
-                                    foreach ($existed_tags_result as $key => $tag_res) {
-                                        if ($tag_res['tag_status'] == 1) {
-                                            $checked = (is_array($blog_tag) && in_array($tag_res['tag_name'], $blog_tag)) ? 'checked' : '';
-                                ?>
-                                            <div class="form-check">
-                                                <input class="form-check-input" type="checkbox" name="blog_tag[]" value="<?= $tag_res['tag_name'] ?>" <?= $checked ?>>
-                                                <label class="form-check-label">
-                                                    <?= $tag_res['tag_name'] ?>
-                                                </label>
-                                            </div>
-                                <?php
-                                        }
-                                    }
-                                }
-                                ?>
-                            </div>
-                        </div>
+
 
                         <div class="mb-3">
                             <label for="blogCategory" class="form-label">Tags</label>
-                            <select class="form-select" id="blogCategory" name="blog_tag" value="<?= $blog_tag ?>" autofocus>
-                                <option selected="" value="choose">Choose...</option>
+                            <select class="form-select" id="tagsMenu" name="blog_tag[]" multiple="multiple">
+                                <option selected value="choose">Choose...</option>
 
                                 <?php
                                 if (is_array($existed_tags_result) && count($existed_tags_result)) {
                                     foreach ($existed_tags_result as $key => $tag_res) {
                                         if ($tag_res['tag_status'] == 1) {
                                 ?>
-                                            <option value="<?= $tag_res['tag_name'] ?>" <?= ($blog_tag == $tag_res['tag_name'] ? 'selected' : '') ?>><?= $tag_res['tag_name'] ?></option>
+                                            <option value="<?= $tag_res['tag_name'] ?>" <?= (in_array($tag_res['tag_name'], $blog_tag) ? 'selected' : '') ?>><?= $tag_res['tag_name'] ?></option>
                                 <?php }
                                     }
                                 }
                                 ?>
                             </select>
                         </div>
+
+
+
                         <div class="mb-3">
                             <label for="blogImage" class="form-label">Blog Image</label>
                             <input type="file" class="form-control" id="blogImage" name="blog_image">
@@ -293,6 +281,7 @@ require_once './includes/footer.php';
 
 <script src="https://cdn.ckeditor.com/ckeditor5/44.1.0/ckeditor5.umd.js"></script>
 <script src="https://cdn.ckbox.io/ckbox/2.4.0/ckbox.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 
 <script>
     const {
@@ -355,4 +344,8 @@ require_once './includes/footer.php';
         .catch(error => {
             console.error("Editor error:", error);
         });
+</script>
+
+<script>
+    $('#tagsMenu').select2();
 </script>
